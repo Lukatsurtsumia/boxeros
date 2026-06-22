@@ -8,4 +8,9 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: parseInt(process.env.VITE_PORT ?? 5174),
+        hmr: { host: 'localhost' },
+    },
 });
