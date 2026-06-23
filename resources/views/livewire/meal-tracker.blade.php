@@ -11,11 +11,11 @@
     {{-- Add meal form --}}
     @if($showForm)
     <form wire:submit="save" class="card space-y-3">
+        <div class="col-span-2">
+            <label class="text-xs mb-1 block" style="color: var(--text-muted);">What did you eat?</label>
+            <input type="text" wire:model="name" class="input-dark" placeholder="Chicken & rice, pasta, salad... (leave blank if uploading photo)">
+        </div>
         <div class="grid grid-cols-2 gap-2">
-            <div class="col-span-2">
-                <label class="text-xs mb-1 block" style="color: var(--text-muted);">Meal Name</label>
-                <input type="text" wire:model="name" class="input-dark" placeholder="Chicken & rice" required>
-            </div>
             <div>
                 <label class="text-xs mb-1 block" style="color: var(--text-muted);">Type</label>
                 <select wire:model="meal_type" class="input-dark">
@@ -28,74 +28,61 @@
                 </select>
             </div>
             <div>
-                <label class="text-xs mb-1 block" style="color: var(--text-muted);">Calories</label>
-                <input type="number" wire:model="calories" class="input-dark" placeholder="450">
-            </div>
-            <div>
-                <label class="text-xs mb-1 block" style="color: var(--text-muted);">Protein (g)</label>
-                <input type="number" step="0.1" wire:model="protein_g" class="input-dark" placeholder="35">
-            </div>
-            <div>
-                <label class="text-xs mb-1 block" style="color: var(--text-muted);">Carbs (g)</label>
-                <input type="number" step="0.1" wire:model="carbs_g" class="input-dark" placeholder="50">
+                <label class="text-xs mb-1 block" style="color: var(--text-muted);">Time</label>
+                <input type="time" wire:model="eaten_time" class="input-dark">
             </div>
         </div>
         <div>
-            <label class="text-xs mb-1 block" style="color: var(--text-muted);">Notes</label>
-            <input type="text" wire:model="description" class="input-dark" placeholder="Optional notes">
+            <label class="text-xs mb-1 block" style="color: var(--text-muted);">Details (optional)</label>
+            <input type="text" wire:model="description" class="input-dark" placeholder="Big portion, home-cooked, restaurant name...">
         </div>
         <div>
-            <label class="text-xs mb-1 block" style="color: var(--text-muted);">Photo (optional)</label>
-            <input type="file" wire:model="photo" class="input-dark text-xs" accept="image/*">
+            <label class="text-xs mb-1 block" style="color: var(--text-muted);">Photo — CORNER will identify & estimate calories from it</label>
+            <input type="file" wire:model="photo" class="input-dark text-xs" accept="image/*" capture="environment">
+            @error('photo') <div class="text-xs mt-1" style="color: var(--blood);">{{ $message }}</div> @enderror
         </div>
-        <button type="submit" class="btn-gold w-full py-2.5">Log Meal</button>
+        <p class="text-xs py-1 px-2 rounded-lg" style="color: var(--text-muted); background: rgba(255,255,255,0.03);">
+            No need to count calories — CORNER estimates them automatically.
+        </p>
+        <button type="submit" class="btn-gold w-full py-2.5" wire:loading.attr="disabled">
+            <span wire:loading.remove wire:target="save">Log Meal</span>
+            <span wire:loading wire:target="save">Estimating calories...</span>
+        </button>
     </form>
     @endif
 
-    {{-- Daily totals --}}
-    @if($meals->count() > 0)
-    <div class="card">
-        <div class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: var(--text-muted);">Today's Totals</div>
-        <div class="grid grid-cols-4 gap-2 text-center">
-            <div>
-                <div class="font-display text-xl font-bold" style="color: var(--gold);">{{ number_format($totalCalories) }}</div>
-                <div class="text-xs" style="color: var(--text-muted);">kcal</div>
-            </div>
-            <div>
-                <div class="font-display text-xl font-bold" style="color: #e74c3c;">{{ number_format($totalProtein, 0) }}g</div>
-                <div class="text-xs" style="color: var(--text-muted);">protein</div>
-            </div>
-            <div>
-                <div class="font-display text-xl font-bold" style="color: #f39c12;">{{ number_format($totalCarbs, 0) }}g</div>
-                <div class="text-xs" style="color: var(--text-muted);">carbs</div>
-            </div>
-            <div>
-                <div class="font-display text-xl font-bold" style="color: #9b59b6;">{{ number_format($totalFat, 0) }}g</div>
-                <div class="text-xs" style="color: var(--text-muted);">fat</div>
-            </div>
+    {{-- Calorie confirmation --}}
+    @if($meals->count() > 0 && !$confirmedToday)
+    <div class="card card-gold">
+        <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--gold);">End of Day — Calories Check</div>
+        @if($estimatedTotal > 0)
+        <p class="text-sm mb-3 leading-relaxed">
+            Based on what you logged, your day looks like about
+            <strong style="color: var(--gold); font-size: 1.1em;">{{ number_format($estimatedTotal) }} kcal</strong>.
+            Does that sound right?
+        </p>
+        <div class="grid grid-cols-3 gap-2">
+            <button wire:click="confirmCalories('less')" class="btn-ghost text-xs py-2.5">Less than that</button>
+            <button wire:click="confirmCalories('right')" class="btn-gold text-xs py-2.5">About right ✓</button>
+            <button wire:click="confirmCalories('more')" class="btn-ghost text-xs py-2.5">More than that</button>
         </div>
-
-        {{-- Macro bar --}}
-        @if($totalProtein + $totalCarbs + $totalFat > 0)
-        @php
-            $macroTotal = ($totalProtein * 4) + ($totalCarbs * 4) + ($totalFat * 9);
-            $proteinPct = $macroTotal > 0 ? round($totalProtein * 4 / $macroTotal * 100) : 0;
-            $carbsPct   = $macroTotal > 0 ? round($totalCarbs * 4 / $macroTotal * 100) : 0;
-            $fatPct     = $macroTotal > 0 ? round($totalFat * 9 / $macroTotal * 100) : 0;
-        @endphp
-        <div class="flex rounded-full overflow-hidden mt-3" style="height: 8px;">
-            <div style="width: {{ $proteinPct }}%; background: #e74c3c;"></div>
-            <div style="width: {{ $carbsPct }}%; background: #f39c12;"></div>
-            <div style="width: {{ $fatPct }}%; background: #9b59b6;"></div>
-        </div>
+        @else
+        <p class="text-sm" style="color: var(--text-muted);">Estimating calories for your meals... Add an API key to enable this.</p>
         @endif
+    </div>
+    @elseif($confirmedToday)
+    <div class="card" style="border-color: rgba(46,204,113,0.3);">
+        <div class="flex items-center justify-between">
+            <span class="text-xs" style="color: var(--text-muted);">Today's calories confirmed</span>
+            <span class="font-display text-2xl font-bold" style="color: #2ecc71;">~{{ number_format($confirmedToday) }} kcal</span>
+        </div>
     </div>
     @endif
 
     {{-- Meals list --}}
     <div class="space-y-2">
         @forelse($meals as $meal)
-        <div class="card flex items-center gap-3">
+        <div wire:key="meal-{{ $meal->id }}" class="card flex items-center gap-3">
             @if($meal->photo)
             <img src="{{ Storage::url($meal->photo) }}" class="w-14 h-14 rounded-xl object-cover flex-shrink-0">
             @else
@@ -105,13 +92,26 @@
             @endif
             <div class="flex-1 min-w-0">
                 <div class="font-medium text-sm truncate">{{ $meal->name }}</div>
-                <div class="text-xs" style="color: var(--text-muted);">{{ ucwords(str_replace('-', ' ', $meal->meal_type)) }}</div>
-                <div class="flex gap-2 mt-1">
-                    @if($meal->calories) <span class="text-xs" style="color: var(--gold);">{{ $meal->calories }} kcal</span> @endif
-                    @if($meal->protein_g) <span class="text-xs" style="color: #e74c3c;">{{ $meal->protein_g }}g P</span> @endif
+                <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-xs" style="color: var(--text-muted);">{{ ucwords(str_replace('-', ' ', $meal->meal_type)) }}</span>
+                    @if($meal->eaten_time)
+                    <span class="text-xs" style="color: var(--text-muted);">· {{ $meal->eaten_time }}</span>
+                    @endif
+                </div>
+                <div class="mt-0.5">
+                    @if($meal->calories)
+                    <span class="text-xs" style="color: {{ $meal->calories_source === 'confirmed' ? '#2ecc71' : 'var(--gold)' }};">
+                        ~{{ $meal->calories }} kcal
+                    </span>
+                    @if($meal->calories_source === 'ai_estimated')
+                    <span class="text-xs" style="color: var(--text-muted);"> AI est.</span>
+                    @endif
+                    @else
+                    <span class="text-xs" style="color: var(--text-muted);">estimating...</span>
+                    @endif
                 </div>
             </div>
-            <button wire:click="delete({{ $meal->id }})" class="text-xs px-2 py-1 rounded-lg" style="color: var(--text-muted); background: rgba(255,255,255,0.04);">✕</button>
+            <button type="button" wire:click="delete({{ $meal->id }})" wire:confirm="Delete this meal?" title="Delete meal" class="text-xs px-2 py-1 rounded-lg flex-shrink-0" style="color: var(--text-muted); background: rgba(255,255,255,0.04);">✕</button>
         </div>
         @empty
         <div class="card text-center py-8">

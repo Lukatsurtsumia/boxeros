@@ -2,13 +2,16 @@
 
     <div class="flex items-center justify-between">
         <div class="font-display text-2xl font-bold">Fights</div>
-        <button wire:click="$toggle('showForm')" class="{{ $showForm ? 'btn-ghost' : 'btn-gold' }} text-xs px-3 py-1.5">
-            {{ $showForm ? 'Cancel' : '+ Add Fight' }}
-        </button>
+        @if($showForm)
+        <button type="button" wire:click="cancelForm" class="btn-ghost text-xs px-3 py-1.5">Cancel</button>
+        @else
+        <button type="button" wire:click="addNew" class="btn-gold text-xs px-3 py-1.5">+ Add Fight</button>
+        @endif
     </div>
 
     @if($showForm)
     <form wire:submit="save" class="card space-y-3">
+        <div class="section-label">{{ $editingId ? 'Edit fight' : 'Add fight' }}</div>
         <div class="grid grid-cols-2 gap-2">
             <div class="col-span-2">
                 <label class="text-xs mb-1 block" style="color: var(--text-muted);">Opponent</label>
@@ -55,7 +58,7 @@
             <label class="text-xs mb-1 block" style="color: var(--text-muted);">Notes</label>
             <textarea wire:model="notes" rows="2" class="input-dark" placeholder="Fight notes..."></textarea>
         </div>
-        <button type="submit" class="btn-gold w-full py-2.5">Save Fight</button>
+        <button type="submit" class="btn-gold w-full py-2.5">{{ $editingId ? 'Update Fight' : 'Save Fight' }}</button>
     </form>
     @endif
 
@@ -65,7 +68,7 @@
         <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted);">Upcoming</div>
         @foreach($upcoming as $fight)
         @php $days = max(0, now()->diffInDays($fight->fight_date, false)); @endphp
-        <div class="card card-gold mb-3">
+        <div wire:key="fight-{{ $fight->id }}" class="card card-gold mb-3">
             <div class="flex items-start justify-between">
                 <div>
                     <div class="text-xs font-semibold mb-1" style="color: var(--gold);">{{ $fight->fight_date->format('D, M d · H:i') }}</div>
@@ -85,7 +88,8 @@
             <div class="flex items-center gap-2 mt-3">
                 @if($fight->weight_class) <span class="badge badge-gray">{{ $fight->weight_class }}</span> @endif
                 <span class="badge badge-gray">{{ $fight->rounds }}R</span>
-                <button wire:click="delete({{ $fight->id }})" class="ml-auto text-xs" style="color: var(--text-muted);">Remove</button>
+                <button type="button" wire:click="edit({{ $fight->id }})" class="ml-auto text-xs px-2.5 py-1 rounded-lg" style="border: 1px solid rgba(243,156,18,0.3); color: var(--gold); background: rgba(243,156,18,0.08);">Edit / record result</button>
+                <button type="button" wire:click="delete({{ $fight->id }})" wire:confirm="Remove this fight from your record?" class="text-xs" style="color: var(--text-muted);">Remove</button>
             </div>
         </div>
         @endforeach
@@ -94,20 +98,48 @@
 
     {{-- Fight history --}}
     @if($history->count() > 0)
+    @php
+        $wins   = $history->where('result', 'win')->count();
+        $losses = $history->where('result', 'loss')->count();
+        $draws  = $history->where('result', 'draw')->count();
+        $resultStyle = [
+            'win'        => ['W',  '#2ecc71', 'rgba(46,204,113,0.15)'],
+            'loss'       => ['L',  '#ff6b6b', 'rgba(192,57,43,0.18)'],
+            'draw'       => ['D',  'var(--text-muted)', 'rgba(255,255,255,0.06)'],
+            'no_contest' => ['NC', 'var(--text-muted)', 'rgba(255,255,255,0.06)'],
+        ];
+    @endphp
     <div>
-        <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted);">History</div>
-        <div class="card">
+        <div class="flex items-center justify-between mb-2">
+            <div class="section-label">History</div>
+            <div class="text-xs font-semibold">
+                <span style="color: #2ecc71;">{{ $wins }}W</span>
+                <span style="color: rgba(255,255,255,0.2);">·</span>
+                <span style="color: #ff6b6b;">{{ $losses }}L</span>
+                <span style="color: rgba(255,255,255,0.2);">·</span>
+                <span style="color: var(--text-muted);">{{ $draws }}D</span>
+            </div>
+        </div>
+        <div class="space-y-2">
             @foreach($history as $fight)
-            @php $rc = ['win'=>'badge-green','loss'=>'badge-red','draw'=>'badge-gray','no_contest'=>'badge-gray'][$fight->result] ?? 'badge-gray' @endphp
-            <div class="flex items-center py-3" style="border-bottom: 1px solid var(--dark-border);">
-                <div class="flex-1">
-                    <div class="font-medium text-sm">vs {{ $fight->opponent_name }}</div>
-                    <div class="text-xs" style="color: var(--text-muted);">
-                        {{ $fight->fight_date->format('M d, Y') }}
+            @php $rs = $resultStyle[$fight->result] ?? ['?', 'var(--text-muted)', 'rgba(255,255,255,0.06)']; @endphp
+            <div wire:key="fight-{{ $fight->id }}" class="flex items-center gap-3 p-3 rounded-xl transition hover:bg-white/5" style="background: rgba(255,255,255,0.02);">
+                <div class="flex items-center justify-center rounded-full flex-shrink-0 font-display font-bold"
+                     style="width: 42px; height: 42px; background: {{ $rs[2] }}; color: {{ $rs[1] }};">{{ $rs[0] }}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="font-semibold text-sm truncate">vs {{ $fight->opponent_name }}</div>
+                    <div class="text-xs truncate" style="color: var(--text-muted);">
+                        {{ $fight->fight_date->format('M j, Y') }}
+                        @if($fight->rounds) · {{ $fight->rounds }}R @endif
                         @if($fight->result_method) · {{ $fight->result_method }} @endif
                     </div>
                 </div>
-                <span class="badge {{ $rc }}">{{ strtoupper(str_replace('_', ' ', $fight->result)) }}</span>
+                <button type="button" wire:click="edit({{ $fight->id }})"
+                        class="text-xs px-3 py-1.5 rounded-lg flex-shrink-0"
+                        style="border: 1px solid rgba(243,156,18,0.3); color: var(--gold); background: rgba(243,156,18,0.08);">Edit</button>
+                <button type="button" wire:click="delete({{ $fight->id }})" wire:confirm="Delete this fight?" title="Delete fight"
+                        class="flex items-center justify-center rounded-lg flex-shrink-0"
+                        style="width: 30px; height: 30px; color: var(--text-muted); background: rgba(255,255,255,0.04);">✕</button>
             </div>
             @endforeach
         </div>
@@ -119,7 +151,7 @@
         <div class="text-4xl mb-3">🥊</div>
         <div class="font-display text-xl font-bold mb-2">No Fights Yet</div>
         <p class="text-sm mb-4" style="color: var(--text-muted);">Add your upcoming fights or past record.</p>
-        <button wire:click="$set('showForm', true)" class="btn-gold">Add First Fight</button>
+        <button type="button" wire:click="addNew" class="btn-gold">Add First Fight</button>
     </div>
     @endif
 

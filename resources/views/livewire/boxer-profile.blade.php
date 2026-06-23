@@ -1,211 +1,343 @@
-<div class="space-y-4 pb-4">
+<div class="pb-6">
 
-    {{-- Header --}}
-    <div class="card card-glow">
-        <div class="flex items-start justify-between">
-            <div class="flex items-center gap-4">
-                @if($profile?->avatar)
-                    <img src="{{ Storage::url($profile->avatar) }}" class="w-20 h-20 rounded-2xl object-cover" style="border: 2px solid var(--blood);">
-                @else
-                    <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl" style="background: linear-gradient(135deg, var(--blood-dark), var(--blood));">🥊</div>
+    @php
+        $totalFights = $profile ? ($profile->wins + $profile->losses + $profile->draws) : 0;
+        $winRate     = $totalFights > 0 ? round(($profile->wins / $totalFights) * 100) : 0;
+    @endphp
+
+    {{-- ═══ FIGHTER HERO ═══ --}}
+    <div class="card card-glow mb-4">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+            @unless($editing)
+            @if($profile?->avatar)
+                <img src="{{ Storage::url($profile->avatar) }}"
+                     class="w-24 h-24 rounded-2xl object-cover flex-shrink-0 mx-auto sm:mx-0"
+                     style="border: 2px solid var(--blood);">
+            @else
+                <div class="w-24 h-24 rounded-2xl flex items-center justify-center text-5xl flex-shrink-0 mx-auto sm:mx-0"
+                     style="background: linear-gradient(145deg, var(--blood-dark), var(--blood));">🥊</div>
+            @endif
+            @endunless
+
+            <div class="flex-1 min-w-0 text-center sm:text-left">
+                <div class="font-display text-3xl font-bold leading-none">{{ auth()->user()->name }}</div>
+                @if($profile?->nickname)
+                <div class="text-base mt-1" style="color: var(--gold);">"{{ $profile->nickname }}"</div>
                 @endif
-                <div>
-                    <div class="font-display text-2xl font-bold">{{ auth()->user()->name }}</div>
-                    @if($profile?->nickname)
-                    <div class="text-sm" style="color: var(--gold);">"{{ $profile->nickname }}"</div>
+                <div class="flex items-center justify-center sm:justify-start gap-2 mt-2 flex-wrap">
+                    @if($profile?->weight_class)
+                    <span class="badge badge-gray">{{ $profile->weight_class }}</span>
                     @endif
                     @if($profile)
-                    <div class="text-sm mt-1" style="color: var(--text-muted);">{{ $profile->weight_class ?? 'Boxer' }}</div>
+                    <span class="badge badge-gray">{{ ucfirst($profile->stance) }}</span>
+                    @if($profile->experience_years > 0)
+                    <span class="badge badge-gray">{{ $profile->experience_years }} yr pro</span>
+                    @endif
                     @endif
                 </div>
             </div>
-            <button wire:click="$toggle('editing')" class="{{ $editing ? 'btn-ghost' : 'btn-primary' }} px-3 py-1.5 text-xs">
-                {{ $editing ? 'Cancel' : 'Edit' }}
+
+            <button wire:click="$toggle('editing')"
+                    class="{{ $editing ? 'btn-ghost' : 'btn-primary' }} px-4 py-2 text-sm flex-shrink-0 self-center">
+                {{ $editing ? '✕ Cancel' : '✎ Edit' }}
             </button>
         </div>
 
+        {{-- Record + win rate --}}
         @if($profile && !$editing)
-        <div class="grid grid-cols-3 gap-3 mt-4 pt-4" style="border-top: 1px solid var(--dark-border);">
-            <div class="text-center">
-                <div class="font-display text-2xl font-bold" style="color: var(--gold);">{{ $profile->wins }}</div>
-                <div class="text-xs" style="color: var(--text-muted);">Wins</div>
+        <div class="mt-4 pt-4" style="border-top: 1px solid var(--dark-border);">
+            <div class="grid grid-cols-3 gap-3">
+                <div class="text-center">
+                    <div class="font-display text-3xl font-bold" style="color: var(--gold);">{{ $profile->wins }}</div>
+                    <div class="text-xs mt-0.5" style="color: var(--text-muted);">Wins</div>
+                </div>
+                <div class="text-center" style="border-left: 1px solid var(--dark-border); border-right: 1px solid var(--dark-border);">
+                    <div class="font-display text-3xl font-bold" style="color: var(--blood);">{{ $profile->losses }}</div>
+                    <div class="text-xs mt-0.5" style="color: var(--text-muted);">Losses</div>
+                </div>
+                <div class="text-center">
+                    <div class="font-display text-3xl font-bold">{{ $profile->draws }}</div>
+                    <div class="text-xs mt-0.5" style="color: var(--text-muted);">Draws</div>
+                </div>
             </div>
-            <div class="text-center">
-                <div class="font-display text-2xl font-bold" style="color: var(--blood);">{{ $profile->losses }}</div>
-                <div class="text-xs" style="color: var(--text-muted);">Losses</div>
+            @if($totalFights > 0)
+            <div class="mt-4">
+                <div class="flex items-center justify-between mb-1.5 text-xs" style="color: var(--text-muted);">
+                    <span>Win rate</span>
+                    <span class="font-semibold" style="color: var(--gold);">{{ $winRate }}% · {{ $totalFights }} pro fights</span>
+                </div>
+                <div class="progress-track" style="height: 10px;">
+                    <div class="progress-fill progress-gold" style="width: {{ $winRate }}%;"></div>
+                </div>
             </div>
-            <div class="text-center">
-                <div class="font-display text-2xl font-bold">{{ $profile->draws }}</div>
-                <div class="text-xs" style="color: var(--text-muted);">Draws</div>
-            </div>
+            @endif
         </div>
         @endif
     </div>
 
-    {{-- Edit form --}}
+    {{-- ═══ EDIT FORM ═══ --}}
     @if($editing)
-    <form wire:submit="save" class="space-y-3">
-        <div class="card space-y-3">
-            <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted);">Identity</div>
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Nickname</label>
-                    <input type="text" wire:model="nickname" class="input-dark" placeholder="Iron Mike">
-                </div>
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Weight Class</label>
-                    <input type="text" wire:model="weight_class" class="input-dark" placeholder="Heavyweight">
+    @php $liveTotal = (int) $wins + (int) $losses + (int) $draws; @endphp
+    <form wire:submit="save" class="space-y-4">
+
+        {{-- Photo --}}
+        <div class="card flex items-center gap-4">
+            @if($avatar)
+                <img src="{{ $avatar->temporaryUrl() }}" class="w-20 h-20 rounded-2xl object-cover flex-shrink-0" style="border: 2px solid var(--gold);">
+            @elseif($profile?->avatar)
+                <img src="{{ Storage::url($profile->avatar) }}" class="w-20 h-20 rounded-2xl object-cover flex-shrink-0" style="border: 2px solid var(--blood);">
+            @else
+                <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0" style="background: linear-gradient(145deg, var(--blood-dark), var(--blood));">🥊</div>
+            @endif
+            <div class="flex-1 min-w-0">
+                <div class="section-label mb-1">Profile Photo</div>
+                <p class="text-xs mb-2" style="color: var(--text-muted);">Square image works best · max 2 MB</p>
+                <label class="btn-ghost text-xs px-3 py-1.5 inline-block cursor-pointer">
+                    <span wire:loading.remove wire:target="avatar">Choose photo</span>
+                    <span wire:loading wire:target="avatar" style="color: var(--gold);">Uploading…</span>
+                    <input type="file" wire:model="avatar" class="hidden" accept="image/*">
+                </label>
+                @error('avatar') <div class="text-xs mt-1" style="color: var(--blood);">{{ $message }}</div> @enderror
+            </div>
+        </div>
+
+        <div class="grid gap-4 lg:grid-cols-2 items-start">
+
+            {{-- Identity --}}
+            <div class="card">
+                <div class="section-label mb-3">🪪 Identity</div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs mb-1 block" style="color: var(--text-muted);">Nickname</label>
+                        <input type="text" wire:model="nickname" class="input-dark" placeholder="Iron Mike">
+                        @error('nickname') <div class="text-xs mt-1" style="color: var(--blood);">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs mb-1 block" style="color: var(--text-muted);">Weight class</label>
+                            <input type="text" wire:model="weight_class" class="input-dark" placeholder="Heavyweight">
+                        </div>
+                        <div>
+                            <label class="text-xs mb-1 block" style="color: var(--text-muted);">Date of birth</label>
+                            <input type="date" wire:model="date_of_birth" class="input-dark" max="{{ now()->toDateString() }}">
+                            @error('date_of_birth') <div class="text-xs mt-1" style="color: var(--blood);">{{ $message }}</div> @enderror
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="grid grid-cols-3 gap-2">
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Weight (kg)</label>
-                    <input type="number" step="0.1" wire:model="current_weight" class="input-dark" placeholder="75.5">
+
+            {{-- Physique --}}
+            <div class="card">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="section-label">📐 Physique & Stance</div>
+                    <span class="text-xs" style="color: var(--text-muted);">Weight is tracked via weigh-ins →</span>
                 </div>
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Height (cm)</label>
-                    <input type="number" wire:model="height_cm" class="input-dark" placeholder="180">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs mb-1 block" style="color: var(--text-muted);">Height (cm)</label>
+                        <input type="number" wire:model="height_cm" class="input-dark" placeholder="180">
+                        @error('height_cm') <div class="text-xs mt-1" style="color: var(--blood);">{{ $message }}</div> @enderror
+                    </div>
+                    <div>
+                        <label class="text-xs mb-1 block" style="color: var(--text-muted);">Reach (cm)</label>
+                        <input type="number" wire:model="reach_cm" class="input-dark" placeholder="185">
+                        @error('reach_cm') <div class="text-xs mt-1" style="color: var(--blood);">{{ $message }}</div> @enderror
+                    </div>
                 </div>
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Reach (cm)</label>
-                    <input type="number" wire:model="reach_cm" class="input-dark" placeholder="185">
+                <div class="grid grid-cols-2 gap-3 mt-3">
+                    <div>
+                        <label class="text-xs mb-1 block" style="color: var(--text-muted);">Years pro</label>
+                        <input type="number" wire:model="experience_years" class="input-dark" placeholder="5">
+                    </div>
+                    <div>
+                        <label class="text-xs mb-1 block" style="color: var(--text-muted);">Stance</label>
+                        <select wire:model="stance" class="input-dark">
+                            <option value="orthodox">Orthodox</option>
+                            <option value="southpaw">Southpaw</option>
+                            <option value="switch">Switch</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Experience (years)</label>
-                    <input type="number" wire:model="experience_years" class="input-dark" placeholder="5">
+
+            {{-- Record & Goal --}}
+            <div class="card">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="section-label">🥊 Record & Goal</div>
+                    <span class="text-xs" style="color: var(--text-muted);">{{ $liveTotal }} total fights</span>
                 </div>
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Stance</label>
-                    <select wire:model="stance" class="input-dark">
-                        <option value="orthodox">Orthodox</option>
-                        <option value="southpaw">Southpaw</option>
-                        <option value="switch">Switch</option>
-                    </select>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="text-xs mb-1 block" style="color: var(--gold);">Wins</label>
+                        <input type="number" wire:model.live="wins" class="input-dark" min="0">
+                    </div>
+                    <div>
+                        <label class="text-xs mb-1 block" style="color: var(--blood);">Losses</label>
+                        <input type="number" wire:model.live="losses" class="input-dark" min="0">
+                    </div>
+                    <div>
+                        <label class="text-xs mb-1 block" style="color: var(--text-muted);">Draws</label>
+                        <input type="number" wire:model.live="draws" class="input-dark" min="0">
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Goal weight (kg)</label>
+                    <input type="number" step="0.1" wire:model="goal_weight" class="input-dark" placeholder="Target fight weight">
+                    @error('goal_weight') <div class="text-xs mt-1" style="color: var(--blood);">{{ $message }}</div> @enderror
+                </div>
+            </div>
+
+            {{-- Gym & team --}}
+            <div class="card">
+                <div class="section-label mb-3">🏟️ Gym & Team</div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs mb-1 block" style="color: var(--text-muted);">Gym</label>
+                        <input type="text" wire:model="gym" class="input-dark" placeholder="Gym name">
+                    </div>
+                    <div>
+                        <label class="text-xs mb-1 block" style="color: var(--text-muted);">Trainer</label>
+                        <input type="text" wire:model="trainer" class="input-dark" placeholder="Trainer name">
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card space-y-3">
-            <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted);">Record</div>
-            <div class="grid grid-cols-3 gap-2">
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--gold);">Wins</label>
-                    <input type="number" wire:model="wins" class="input-dark" placeholder="0">
-                </div>
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--blood);">Losses</label>
-                    <input type="number" wire:model="losses" class="input-dark" placeholder="0">
-                </div>
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Draws</label>
-                    <input type="number" wire:model="draws" class="input-dark" placeholder="0">
-                </div>
-            </div>
-        </div>
-
-        <div class="card space-y-3">
-            <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted);">Gym & Team</div>
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Gym</label>
-                    <input type="text" wire:model="gym" class="input-dark" placeholder="Gym name">
-                </div>
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Trainer</label>
-                    <input type="text" wire:model="trainer" class="input-dark" placeholder="Trainer name">
-                </div>
-            </div>
-            <div>
-                <label class="text-xs mb-1 block" style="color: var(--text-muted);">Bio</label>
-                <textarea wire:model="bio" rows="3" class="input-dark" placeholder="Tell your story..."></textarea>
-            </div>
-        </div>
-
-        <div class="card space-y-3">
-            <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted);">Goals</div>
-            <div class="grid grid-cols-3 gap-2">
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Goal Weight</label>
-                    <input type="number" step="0.1" wire:model="goal_weight" class="input-dark" placeholder="70.0">
-                </div>
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Water Goal (L)</label>
-                    <input type="number" step="0.1" wire:model="daily_water_goal_liters" class="input-dark">
-                </div>
-                <div>
-                    <label class="text-xs mb-1 block" style="color: var(--text-muted);">Cal Goal</label>
-                    <input type="number" wire:model="daily_calorie_goal" class="input-dark">
-                </div>
-            </div>
-        </div>
-
+        {{-- Bio --}}
         <div class="card">
-            <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted);">Avatar</div>
-            <input type="file" wire:model="avatar" class="input-dark text-xs" accept="image/*">
-            @error('avatar') <div class="text-xs mt-1" style="color: var(--blood);">{{ $message }}</div> @enderror
+            <div class="section-label mb-3">📝 Bio</div>
+            <textarea wire:model="bio" rows="3" class="input-dark" placeholder="Tell your story — CORNER uses this to coach you."></textarea>
         </div>
 
-        <button type="submit" class="btn-primary w-full py-3">Save Profile</button>
+        {{-- Actions --}}
+        <div class="flex gap-3">
+            <button type="submit" class="btn-primary flex-1 py-3">
+                <span wire:loading.remove wire:target="save">Save Profile</span>
+                <span wire:loading wire:target="save">Saving…</span>
+            </button>
+            <button type="button" wire:click="$toggle('editing')" class="btn-ghost px-6 py-3">Cancel</button>
+        </div>
     </form>
 
-    @else
-    {{-- Profile view --}}
-    @if($profile)
-    <div class="card">
-        <div class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: var(--text-muted);">Stats</div>
-        <div class="space-y-3">
-            @foreach([
-                ['Weight', ($profile->current_weight ? $profile->current_weight . ' kg → ' . ($profile->goal_weight ?? '?') . ' kg goal' : 'Not set'), '#3498db'],
-                ['Height', ($profile->height_cm ? $profile->height_cm . ' cm' : 'Not set'), null],
-                ['Reach', ($profile->reach_cm ? $profile->reach_cm . ' cm' : 'Not set'), null],
-                ['Stance', ucfirst($profile->stance), null],
-                ['Experience', $profile->experience_years . ' years', null],
-                ['Gym', ($profile->gym ?? 'Not set'), null],
-                ['Trainer', ($profile->trainer ?? 'Not set'), null],
-            ] as [$label, $val, $color])
-            <div class="flex items-center justify-between py-1.5" style="border-bottom: 1px solid var(--dark-border);">
-                <span class="text-sm" style="color: var(--text-muted);">{{ $label }}</span>
-                <span class="text-sm font-medium" @if($color) style="color: {{ $color }}" @endif>{{ $val }}</span>
+    @elseif($profile)
+    {{-- ═══ TALE OF THE TAPE ═══ --}}
+    <div class="card mb-4">
+        <div class="section-label mb-3">Tale of the Tape</div>
+        @php
+            $vitals = [
+                ['🎂', 'Age',    $profile->date_of_birth ? $profile->date_of_birth->age . ' yrs' : '—'],
+                ['⚖️', 'Weight', $currentWeight ? number_format($currentWeight, 1) . ' kg' : '—'],
+                ['📏', 'Height', $profile->height_cm ? $profile->height_cm . ' cm' : '—'],
+                ['🤜', 'Reach',  $profile->reach_cm ? $profile->reach_cm . ' cm' : '—'],
+                ['🥊', 'Stance', ucfirst($profile->stance)],
+                ['⏳', 'Pro yrs', $profile->experience_years ?: '—'],
+            ];
+        @endphp
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            @foreach($vitals as [$icon, $label, $val])
+            <div class="stat-tile text-center">
+                <div class="text-xl mb-1">{{ $icon }}</div>
+                <div class="font-display text-lg font-bold leading-none">{{ $val }}</div>
+                <div class="text-xs mt-1" style="color: var(--text-muted);">{{ $label }}</div>
             </div>
             @endforeach
         </div>
-    </div>
 
-    @if($profile->bio)
-    <div class="card">
-        <div class="text-xs font-semibold uppercase tracking-wider mb-2" style="color: var(--text-muted);">Bio</div>
-        <p class="text-sm leading-relaxed">{{ $profile->bio }}</p>
-    </div>
-    @endif
-
-    @if($recentFights->count() > 0)
-    <div class="card">
-        <div class="text-xs font-semibold uppercase tracking-wider mb-3" style="color: var(--text-muted);">Fight History</div>
-        <div class="space-y-2">
-        @foreach($recentFights as $fight)
-        <div class="flex items-center justify-between py-1.5" style="border-bottom: 1px solid var(--dark-border);">
-            <div>
-                <div class="text-sm font-medium">vs {{ $fight->opponent_name }}</div>
-                <div class="text-xs" style="color: var(--text-muted);">{{ $fight->fight_date->format('M Y') }}</div>
+        {{-- Goal weight — prominent, at the end --}}
+        <div class="stat-tile stat-tile-gold mt-2 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">🎯</span>
+                <span class="text-sm" style="color: var(--text-muted);">Goal weight</span>
             </div>
-            @php $rc = ['win'=>'badge-green','loss'=>'badge-red','draw'=>'badge-gray','upcoming'=>'badge-gold'][$fight->result] ?? 'badge-gray' @endphp
-            <span class="badge {{ $rc }}">{{ strtoupper($fight->result) }}</span>
-        </div>
-        @endforeach
+            <div class="font-display text-2xl font-bold" style="color: var(--gold);">{{ $profile->goal_weight ? $profile->goal_weight . ' kg' : '—' }}</div>
         </div>
     </div>
-    @endif
+
+    <div class="grid gap-4 lg:grid-cols-2 items-start">
+
+        {{-- Weight goal --}}
+        @if($currentWeight && $profile->goal_weight)
+        @php $delta = round($currentWeight - $profile->goal_weight, 1); @endphp
+        <div class="card">
+            <div class="section-label mb-3">Weight to Goal</div>
+            <div class="flex items-end justify-between">
+                <div>
+                    <div class="font-display text-3xl font-bold">{{ number_format($currentWeight, 1) }}<span class="text-base" style="color: var(--text-muted);"> kg</span></div>
+                    <div class="text-xs mt-0.5" style="color: var(--text-muted);">current{{ $weightAgo ? ' · ' . $weightAgo : '' }}</div>
+                </div>
+                <div class="text-center px-3">
+                    <div class="font-display text-xl font-bold" style="color: {{ $delta == 0 ? '#2ecc71' : ($delta > 0 ? 'var(--blood)' : 'var(--gold)') }};">
+                        {{ $delta > 0 ? $delta . ' over' : ($delta < 0 ? abs($delta) . ' under' : 'on weight') }}
+                    </div>
+                    <div class="text-xs" style="color: var(--text-muted);">{{ $delta == 0 ? '✓ at target' : 'to cut/gain' }}</div>
+                </div>
+                <div class="text-right">
+                    <div class="font-display text-3xl font-bold" style="color: var(--gold);">{{ $profile->goal_weight }}<span class="text-base" style="color: var(--text-muted);"> kg</span></div>
+                    <div class="text-xs mt-0.5" style="color: var(--text-muted);">goal</div>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Gym & team --}}
+        @if($profile->gym || $profile->trainer)
+        <div class="card">
+            <div class="section-label mb-3">Gym & Team</div>
+            <div class="space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm" style="color: var(--text-muted);">🏋️ Gym</span>
+                    <span class="text-sm font-medium">{{ $profile->gym ?? '—' }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm" style="color: var(--text-muted);">👤 Trainer</span>
+                    <span class="text-sm font-medium">{{ $profile->trainer ?? '—' }}</span>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        {{-- Bio --}}
+        @if($profile->bio)
+        <div class="card">
+            <div class="section-label mb-2">Bio</div>
+            <p class="text-sm leading-relaxed">{{ $profile->bio }}</p>
+        </div>
+        @endif
+
+        {{-- Fight history --}}
+        @if($recentFights->count() > 0)
+        <div class="card">
+            <div class="flex items-center justify-between mb-3">
+                <div class="section-label">Recent Fights</div>
+                <a href="{{ route('fights') }}" class="text-xs" style="color: var(--gold); text-decoration: none;">All →</a>
+            </div>
+            <div class="space-y-0">
+            @foreach($recentFights as $fight)
+            <div class="flex items-center justify-between py-2.5" style="border-bottom: 1px solid var(--dark-border);">
+                <div>
+                    <div class="text-sm font-medium">vs {{ $fight->opponent_name }}</div>
+                    <div class="text-xs" style="color: var(--text-muted);">{{ $fight->fight_date->format('M Y') }}</div>
+                </div>
+                @php $rc = ['win'=>'badge-green','loss'=>'badge-red','draw'=>'badge-gray','upcoming'=>'badge-gold'][$fight->result] ?? 'badge-gray' @endphp
+                <span class="badge {{ $rc }}">{{ strtoupper($fight->result) }}</span>
+            </div>
+            @endforeach
+            </div>
+        </div>
+        @endif
+
+    </div>
 
     @else
-    <div class="card text-center py-8">
-        <div class="text-4xl mb-3">🥊</div>
-        <div class="font-display text-xl font-bold mb-2">Complete Your Profile</div>
-        <p class="text-sm mb-4" style="color: var(--text-muted);">Add your stats so your AI coach knows you.</p>
-        <button wire:click="$set('editing', true)" class="btn-primary">Setup Profile</button>
+    {{-- ═══ EMPTY STATE ═══ --}}
+    <div class="card text-center py-10">
+        <div class="text-5xl mb-3">🥊</div>
+        <div class="font-display text-2xl font-bold mb-2">Complete Your Fighter Profile</div>
+        <p class="text-sm mb-5 max-w-sm mx-auto" style="color: var(--text-muted);">
+            Set up your record, vitals, and goal weight so CORNER's coaching is actually about you.
+        </p>
+        <button wire:click="$set('editing', true)" class="btn-primary px-6 py-3">Set Up Profile →</button>
     </div>
-    @endif
     @endif
 
 </div>

@@ -231,9 +231,78 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--dark-border); border-radius: 4px; }
+
+        /* ── Reusable dashboard primitives ── */
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+        }
+        .stat-tile {
+            border-radius: 12px;
+            padding: 0.85rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .stat-tile-blood { background: rgba(192,57,43,0.08);  border-color: rgba(192,57,43,0.2); }
+        .stat-tile-gold  { background: rgba(243,156,18,0.08);  border-color: rgba(243,156,18,0.2); }
+        .stat-tile-blue  { background: rgba(52,152,219,0.08);  border-color: rgba(52,152,219,0.2); }
+
+        /* ── Desktop sidebar (≥1024px) ── */
+        .sidebar { display: none; }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.7rem 0.9rem;
+            border-radius: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.18s;
+        }
+        .sidebar-link svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+        .sidebar-link.active {
+            background: rgba(192,57,43,0.14);
+            color: #ff6b6b;
+            border: 1px solid rgba(192,57,43,0.3);
+        }
+
+        @media (min-width: 1024px) {
+            body { padding-bottom: 2rem; }
+            .sidebar {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 0; left: 0; bottom: 0;
+                width: 240px;
+                background: rgba(17,17,24,0.95);
+                border-right: 1px solid var(--dark-border);
+                padding: 1.25rem 0.9rem;
+                z-index: 60;
+            }
+        }
     </style>
 </head>
 <body>
+
+    @php
+        // Single source of truth for navigation — looped in both the desktop sidebar and the
+        // mobile bottom bar. `d` is the SVG path; all icons share the same <svg> wrapper.
+        $navItems = [
+            ['route' => 'dashboard',     'label' => 'Home',    'd' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
+            ['route' => 'boxer.profile', 'label' => 'Profile', 'd' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
+            ['route' => 'daily.log',     'label' => 'Log',     'd' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
+            ['route' => 'meals',         'label' => 'Meals',   'd' => 'M12 6v6m0 0v6m0-6h6m-6 0H6'],
+            ['route' => 'injuries',      'label' => 'Injury',  'd' => 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'],
+            ['route' => 'chat',          'label' => 'Coach',   'd' => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z'],
+            ['route' => 'fights',        'label' => 'Fights',  'd' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
+        ];
+    @endphp
 
     {{-- Flash message --}}
     @if(session('message'))
@@ -244,8 +313,28 @@
     </div>
     @endif
 
-    {{-- Top header --}}
-    <div class="top-header flex items-center justify-between">
+    {{-- Desktop sidebar (≥1024px) --}}
+    <aside class="sidebar">
+        <div class="flex items-center gap-2 px-2 mb-6">
+            <span class="font-display text-2xl font-bold" style="color: var(--blood);">BOXER</span>
+            <span class="font-display text-2xl font-bold text-white">OS</span>
+        </div>
+        <nav class="flex flex-col gap-1 flex-1">
+            @foreach($navItems as $item)
+            <a href="{{ route($item['route']) }}" class="sidebar-link {{ request()->routeIs($item['route']) ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['d'] }}"/></svg>
+                {{ $item['label'] }}
+            </a>
+            @endforeach
+        </nav>
+        <form method="POST" action="{{ route('logout') }}" class="mt-4">
+            @csrf
+            <button type="submit" class="btn-ghost w-full text-sm">Logout</button>
+        </form>
+    </aside>
+
+    {{-- Mobile top header (<1024px) --}}
+    <div class="top-header flex items-center justify-between lg:hidden">
         <div class="flex items-center gap-2">
             <span class="font-display text-xl font-bold" style="color: var(--blood);">BOXER</span>
             <span class="font-display text-xl font-bold text-white">OS</span>
@@ -260,41 +349,21 @@
     </div>
 
     {{-- Page content --}}
-    <main class="max-w-lg mx-auto px-3 pt-4">
-        {{ $slot }}
+    <main class="px-3 pt-4 lg:pt-8 lg:pr-8 lg:pl-[264px]">
+        <div class="max-w-lg lg:max-w-6xl mx-auto">
+            {{ $slot }}
+        </div>
     </main>
 
-    {{-- Bottom navigation --}}
-    <nav class="bottom-nav">
+    {{-- Mobile bottom navigation (<1024px) --}}
+    <nav class="bottom-nav lg:hidden">
         <div class="grid grid-cols-7 gap-0 max-w-lg mx-auto px-2">
-            <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                Home
+            @foreach($navItems as $item)
+            <a href="{{ route($item['route']) }}" class="{{ request()->routeIs($item['route']) ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['d'] }}"/></svg>
+                {{ $item['label'] }}
             </a>
-            <a href="{{ route('boxer.profile') }}" class="{{ request()->routeIs('boxer.profile') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                Profile
-            </a>
-            <a href="{{ route('daily.log') }}" class="{{ request()->routeIs('daily.log') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                Log
-            </a>
-            <a href="{{ route('meals') }}" class="{{ request()->routeIs('meals') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                Meals
-            </a>
-            <a href="{{ route('injuries') }}" class="{{ request()->routeIs('injuries') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                Injury
-            </a>
-            <a href="{{ route('chat') }}" class="{{ request()->routeIs('chat') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                Coach
-            </a>
-            <a href="{{ route('fights') }}" class="{{ request()->routeIs('fights') ? 'active' : '' }}">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                Fights
-            </a>
+            @endforeach
         </div>
     </nav>
 

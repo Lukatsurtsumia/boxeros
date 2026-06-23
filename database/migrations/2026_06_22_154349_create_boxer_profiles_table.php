@@ -30,8 +30,6 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->string('avatar')->nullable();
             $table->decimal('goal_weight', 5, 2)->nullable();
-            $table->decimal('daily_water_goal_liters', 3, 1)->default(3.0);
-            $table->integer('daily_calorie_goal')->default(2500);
             $table->timestamps();
         });
     }

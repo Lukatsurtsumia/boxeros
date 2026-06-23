@@ -8,11 +8,8 @@ use App\Livewire\MealTracker;
 use App\Livewire\InjuryTracker;
 use App\Livewire\FightCalendar;
 use App\Livewire\ChatBot;
-use App\Livewire\PhotoGallery;
 
-Route::get('/', function () {
-    return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
-});
+Route::get('/', fn () => auth()->check() ? redirect()->route('dashboard') : view('welcome'))->name('home');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
@@ -22,7 +19,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/injuries', InjuryTracker::class)->name('injuries');
     Route::get('/fights', FightCalendar::class)->name('fights');
     Route::get('/chat', ChatBot::class)->name('chat');
-    Route::get('/photos', PhotoGallery::class)->name('photos');
 });
 
 require __DIR__.'/auth.php';

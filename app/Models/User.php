@@ -49,14 +49,33 @@ class User extends Authenticatable
         return $this->hasMany(ChatMessage::class);
     }
 
-    public function photos()
+    public function weightEntries()
     {
-        return $this->hasMany(Photo::class);
+        return $this->hasMany(WeightEntry::class);
     }
 
     public function todayLog()
     {
         return $this->hasOne(DailyLog::class)->whereDate('log_date', today());
+    }
+
+    /** Most recent weigh-in, or null if none logged. */
+    public function latestWeight(): ?WeightEntry
+    {
+        return $this->weightEntries()->orderByDesc('weighed_at')->first();
+    }
+
+    /** Current weight in kg — latest weigh-in, falling back to the legacy profile field. */
+    public function currentWeight(): ?float
+    {
+        $entry = $this->latestWeight();
+        if ($entry) {
+            return (float) $entry->weight_kg;
+        }
+
+        return $this->boxerProfile?->current_weight !== null
+            ? (float) $this->boxerProfile->current_weight
+            : null;
     }
 
     /**

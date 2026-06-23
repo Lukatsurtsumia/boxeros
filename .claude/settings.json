@@ -1,5 +1,10 @@
 {
   "permissions": {
+    "allow": [
+      "PowerShell($resp = Invoke-WebRequest -Uri \"http://localhost:8000/login\" -UseBasicParsing -TimeoutSec 5; Write-Host \"Login page: $\\($resp.StatusCode\\)\"; $resp2 = Invoke-WebRequest -Uri \"http://localhost:8000/register\" -UseBasicParsing -TimeoutSec 5; Write-Host \"Register page: $\\($resp2.StatusCode\\)\")",
+      "PowerShell(\\(Invoke-WebRequest -Uri \"http://localhost:8090\" -UseBasicParsing -TimeoutSec 8\\).StatusCode)",
+      "Bash(wsl -d Ubuntu -- bash)"
+    ],
     "additionalDirectories": [
       "c:\\Users\\Godfather\\projects"
     ]

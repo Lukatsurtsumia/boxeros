@@ -1,59 +1,96 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# BoxerOS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A mobile-first, dark-themed web app for boxers to track health, performance, and get AI coaching.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Dashboard** — fighter header, fight countdown, water/calorie progress bars, weight trend chart
+- **Boxer Profile** — nickname, weight class, record (W/L/D), gym, trainer, stance, bio, avatar upload
+- **Daily Log** — weight, water (+250ml quick-add), calories, sleep, training notes, mood/energy
+- **Meal Tracker** — log meals with macros and food photo uploads
+- **Injury Tracker** — report injuries with automatic Claude AI recovery advice
+- **Fight Calendar** — upcoming fight countdown and full fight history
+- **CORNER Chatbot** — Claude AI coach with full boxer context (profile, today's log, injuries, next fight)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Backend:** Laravel 12, PHP 8.4, MySQL
+- **Frontend:** Livewire 4, Tailwind CSS, Vite
+- **Auth:** Laravel Breeze (Blade)
+- **AI:** Anthropic Claude (`claude-sonnet-4-6`) via direct HTTP
+- **Infrastructure:** Docker via Laravel Sail (WSL2 Ubuntu 24.04)
 
-## Learning Laravel
+## Getting Started
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Prerequisites
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- WSL2 with Ubuntu 24.04 LTS
+- Docker Desktop (with WSL2 integration enabled)
+- Node 22 LTS (via NVM) and Composer 2.9 inside WSL2
 
-## Laravel Sponsors
+### Setup
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# Clone and enter the project (inside WSL2)
+git clone <repo-url> ~/projects/healthy_life
+cd ~/projects/healthy_life
 
-### Premium Partners
+# Install dependencies
+composer install
+npm install
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Configure environment
+cp .env.example .env
+php artisan key:generate
+```
 
-## Contributing
+Edit `.env` and set:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```env
+DB_DATABASE=boxeros
+DB_USERNAME=sail
+DB_PASSWORD=password
 
-## Code of Conduct
+ANTHROPIC_API_KEY=your-key-here
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Running with Docker/Sail
 
-## Security Vulnerabilities
+```bash
+# Start containers (HTTP: 8090, Vite: 5174, MySQL: 3320)
+docker compose up -d
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Run migrations
+docker compose exec laravel.test php artisan migrate
 
-## License
+# Build frontend assets (hot reload)
+npm run dev
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+App is available at **http://localhost:8090**
+
+### Artisan commands
+
+```bash
+# Via docker compose
+docker compose exec laravel.test php artisan <command>
+
+# Via Sail alias
+./vendor/bin/sail artisan <command>
+```
+
+## Running Tests
+
+```bash
+./vendor/bin/sail artisan test
+# or
+php artisan test
+```
+
+## Environment Variables
+
+| Variable | Description |
+|---|---|
+| `ANTHROPIC_API_KEY` | Enables CORNER chatbot and AI injury recovery advice |
+| `DB_DATABASE` | Database name (`boxeros`) |
+| `APP_URL` | Set to `http://localhost:8090` for local dev |

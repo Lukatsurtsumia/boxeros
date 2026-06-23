@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Injury;
-use Illuminate\Support\Facades\Http;
+use App\Support\Corner;
 
 class InjuryTracker extends Component
 {
@@ -47,31 +47,18 @@ class InjuryTracker extends Component
 
     private function getAiFeedback(Injury $injury)
     {
-        if (!config('services.anthropic.key')) return;
+        if (!Corner::enabled()) return;
 
-        $profile = auth()->user()->boxerProfile;
-        $context = "Boxer profile: weight {$profile?->current_weight}kg, experience {$profile?->experience_years} years.";
+        $user    = auth()->user();
+        $profile = $user->boxerProfile;
+        $weight  = $user->currentWeight();
+        $context = "Boxer profile: weight " . ($weight ? round($weight, 1) . "kg" : 'unknown') . ", experience {$profile?->experience_years} years.";
 
-        try {
-            $response = Http::withHeaders([
-                'x-api-key' => config('services.anthropic.key'),
-                'anthropic-version' => '2023-06-01',
-                'content-type' => 'application/json',
-            ])->post('https://api.anthropic.com/v1/messages', [
-                'model' => 'claude-sonnet-4-6',
-                'max_tokens' => 400,
-                'messages' => [[
-                    'role' => 'user',
-                    'content' => "You are a sports medicine advisor for professional boxers. {$context}\n\nThe boxer has reported this injury:\n- Body part: {$injury->body_part}\n- Injury: {$injury->title}\n- Description: {$injury->description}\n- Severity: {$injury->severity}\n\nGive concise, practical recovery advice and indicate when they can safely return to training. Be direct and professional.",
-                ]],
-            ]);
+        $prompt = "You are a sports medicine advisor for professional boxers. {$context}\n\nThe boxer has reported this injury:\n- Body part: {$injury->body_part}\n- Injury: {$injury->title}\n- Description: {$injury->description}\n- Severity: {$injury->severity}\n\nGive concise, practical recovery advice and indicate when they can safely return to training. Be direct and professional.";
 
-            if ($response->successful()) {
-                $feedback = $response->json('content.0.text');
-                $injury->update(['ai_feedback' => $feedback]);
-            }
-        } catch (\Exception $e) {
-            // AI feedback is optional; silently fail
+        $feedback = Corner::ask([['role' => 'user', 'content' => $prompt]], null, 'claude-sonnet-4-6', 400);
+        if ($feedback) {
+            $injury->update(['ai_feedback' => $feedback]);
         }
     }
 

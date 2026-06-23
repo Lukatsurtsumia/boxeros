@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Meal extends Model
 {
     protected $fillable = [
-        'user_id', 'name', 'meal_type', 'calories', 'protein_g',
-        'carbs_g', 'fat_g', 'description', 'photo', 'eaten_at',
+        'user_id', 'name', 'meal_type',
+        'calories', 'calories_source',
+        'protein_g', 'carbs_g', 'fat_g',
+        'description', 'photo', 'eaten_at', 'eaten_time',
     ];
 
     protected $casts = [
