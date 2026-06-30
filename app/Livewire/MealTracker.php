@@ -3,22 +3,22 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
 use App\Models\Meal;
 use App\Support\Corner;
+use App\Support\FoodDb;
 
 class MealTracker extends Component
 {
-    use WithFileUploads;
-
     public string $name = '';
     public string $meal_type = 'lunch';
     public string $description = '';
-    public $photo;
     public $eaten_at;
     public string $eaten_time = '';
 
     public bool $showForm = false;
+
+    public ?int $editId = null;   // meal being corrected
+    public $editKcal = null;
 
     public function mount(): void
     {
@@ -32,12 +32,9 @@ class MealTracker extends Component
             'name'        => 'nullable|string|max:150',
             'meal_type'   => 'required|in:breakfast,lunch,dinner,snack,pre-workout,post-workout',
             'description' => 'nullable|string|max:500',
-            'photo'       => 'nullable|image|max:6144',
             'eaten_at'    => 'required|date',
             'eaten_time'  => 'nullable',
         ]);
-
-        $photoPath = $this->photo ? $this->photo->store('meals', 'public') : null;
 
         $meal = auth()->user()->meals()->create([
             'name'            => $this->name ?: 'Food',
@@ -45,90 +42,101 @@ class MealTracker extends Component
             'description'     => $this->description ?: null,
             'eaten_at'        => $this->eaten_at,
             'eaten_time'      => $this->eaten_time ?: null,
-            'photo'           => $photoPath,
             'calories_source' => 'unknown',
         ]);
 
-        $this->autoEstimate($meal, $photoPath);
+        $this->autoEstimate($meal);
+        $this->syncDaily();
 
-        $this->reset(['name', 'description', 'photo']);
+        $this->reset(['name', 'description']);
         $this->eaten_time = now()->format('H:i');
         $this->showForm   = false;
         session()->flash('message', 'Meal logged!');
     }
 
-    private function autoEstimate(Meal $meal, ?string $photoPath): void
+    private function autoEstimate(Meal $meal): void
     {
-        if (!Corner::enabled()) return;
+        $desc = $meal->name !== 'Food' ? $meal->name : '';
+        if ($meal->description) $desc .= ($desc ? ' ' : '') . $meal->description;
 
-        $content = $this->buildEstimationContent($meal, $photoPath);
-        $text    = Corner::ask([['role' => 'user', 'content' => $content]], null, 'claude-haiku-4-5-20251001', 60);
-        if (!$text) return;
-
-        $text = trim($text);
-
-        // If photo was used and meal name was generic, try to extract identified food name
-        if ($photoPath && $meal->name === 'Food') {
-            if (preg_match('/FOOD:\s*([^\n|]{2,60})/i', $text, $m)) {
-                $meal->name = trim($m[1]);
-            }
+        // 1) Local food table first — real nutrition values, zero API cost.
+        if ($desc !== '' && ($kcal = FoodDb::estimate($desc)) !== null) {
+            $meal->calories        = $kcal;
+            $meal->calories_source = 'ai_estimated'; // reuse existing enum value; shown to the user as a plain "estimate"
+            $meal->save();
+            return;
         }
 
-        // Extract calorie estimate
-        if (preg_match('/(\d{2,4})/i', $text, $m)) {
+        // 2) AI fallback — only for foods the local table doesn't know.
+        if (!Corner::enabled() || !Corner::allow('meal')) return;
+
+        $item = $desc ?: 'a typical ' . $meal->meal_type;
+        $text = Corner::ask(
+            [['role' => 'user', 'content' => "Estimate calories for: {$item}\nRespond with only: CALORIES: [number]"]],
+            null,
+            'claude-haiku-4-5-20251001',
+            60
+        );
+        if (!$text) return;
+
+        if (preg_match('/(\d{2,4})/', $text, $m)) {
             $calories = (int) $m[1];
             if ($calories >= 20 && $calories <= 4000) {
                 $meal->calories        = $calories;
                 $meal->calories_source = 'ai_estimated';
+                $meal->save();
             }
         }
-
-        $meal->save();
     }
 
-    private function buildEstimationContent(Meal $meal, ?string $photoPath): array|string
+    /** Accept CORNER's estimate for this meal as-is. */
+    public function confirmExact(int $id): void
     {
-        $desc = $meal->name !== 'Food' ? $meal->name : '';
-        if ($meal->description) $desc .= ($desc ? ' — ' : '') . $meal->description;
-
-        if ($photoPath) {
-            $fullPath = storage_path('app/public/' . $photoPath);
-            if (file_exists($fullPath)) {
-                $imageData = base64_encode(file_get_contents($fullPath));
-                $mimeType  = mime_content_type($fullPath);
-                $prompt    = $desc
-                    ? "This is a photo of: {$desc}. Identify the food precisely and estimate calories. Reply:\nFOOD: [name]\nCALORIES: [number]"
-                    : "Identify this food and estimate calories. Reply:\nFOOD: [name]\nCALORIES: [number]";
-                return [
-                    ['type' => 'image', 'source' => ['type' => 'base64', 'media_type' => $mimeType, 'data' => $imageData]],
-                    ['type' => 'text', 'text' => $prompt],
-                ];
-            }
+        $meal = auth()->user()->meals()->find($id);
+        if ($meal) {
+            $meal->update(['calories_source' => 'confirmed']);
+            $this->syncDaily();
         }
-
-        $item = $desc ?: 'a typical meal';
-        return "Estimate calories for: {$item}\nRespond with only: CALORIES: [number]";
     }
 
-    public function confirmCalories(string $direction): void
+    /** Open the inline editor to correct a meal's calories (it was more or less than estimated). */
+    public function startFix(int $id): void
     {
-        $estimated = (int) auth()->user()->meals()
-            ->whereDate('eaten_at', today())
-            ->whereNotNull('calories')
-            ->sum('calories');
+        $meal = auth()->user()->meals()->find($id);
+        if ($meal) {
+            $this->editId   = $id;
+            $this->editKcal = $meal->calories;
+        }
+    }
 
-        $confirmed = match ($direction) {
-            'less'  => (int) round($estimated * 0.8),
-            'more'  => (int) round($estimated * 1.25),
-            default => $estimated,
-        };
+    public function saveFix(): void
+    {
+        $meal = $this->editId ? auth()->user()->meals()->find($this->editId) : null;
+        if ($meal && is_numeric($this->editKcal)) {
+            $meal->update([
+                'calories'        => max(0, min(6000, (int) $this->editKcal)),
+                'calories_source' => 'confirmed',
+            ]);
+            $this->syncDaily();
+        }
+        $this->editId = null;
+        $this->editKcal = null;
+    }
 
+    public function cancelFix(): void
+    {
+        $this->editId = null;
+        $this->editKcal = null;
+    }
+
+    /** Keep the day's total calories (used by the dashboard & plan) in sync with the meals. */
+    private function syncDaily(): void
+    {
+        $total = (int) auth()->user()->meals()->whereDate('eaten_at', today())->sum('calories');
         auth()->user()->dailyLogs()->updateOrCreate(
             ['log_date' => today()],
-            ['calories_consumed' => $confirmed]
+            ['calories_consumed' => $total]
         );
-
-        session()->flash('message', "Calories saved: ~{$confirmed} kcal");
     }
 
     public function delete(int $id): void
@@ -136,23 +144,23 @@ class MealTracker extends Component
         $meal = auth()->user()->meals()->findOrFail($id);
         if ($meal->photo) \Storage::disk('public')->delete($meal->photo);
         $meal->delete();
+        $this->syncDaily();
     }
 
     public function render()
     {
+        $this->syncDaily(); // keep the cached daily total (read by chat/weekly recap) in step with the meals
+
         $meals = auth()->user()->meals()
             ->whereDate('eaten_at', today())
             ->orderByRaw("COALESCE(eaten_time, '23:59') ASC")
             ->orderBy('created_at')
             ->get();
 
-        $estimatedTotal = (int) $meals->whereNotNull('calories')->sum('calories');
+        $total          = (int) $meals->sum('calories');
+        $confirmedCount = $meals->where('calories_source', 'confirmed')->count();
 
-        $confirmedToday = auth()->user()->dailyLogs()
-            ->whereDate('log_date', today())
-            ->value('calories_consumed');
-
-        return view('livewire.meal-tracker', compact('meals', 'estimatedTotal', 'confirmedToday'))
+        return view('livewire.meal-tracker', compact('meals', 'total', 'confirmedCount'))
             ->layout('layouts.app');
     }
 }

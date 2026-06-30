@@ -6,13 +6,19 @@ use Livewire\Component;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use App\Support\Corner;
+use App\Support\CornerInsights;
+use App\Support\PlanProgress;
 use App\Livewire\Concerns\LogsWeight;
+use Illuminate\Support\Facades\Cache;
 
 class Dashboard extends Component
 {
     use LogsWeight;
 
     public ?string $weeklyConclusion = null;
+
+    /** Which week the strip shows: 0 = this week, -1 = last week, etc. Never positive (no future). */
+    public int $weekOffset = 0;
 
     private static array $typeIcons = [
         'boxing'   => '🥊',
@@ -25,6 +31,37 @@ class Dashboard extends Component
         'other'    => '💪',
     ];
 
+    public function mount(): void
+    {
+        // First-time fighter with no profile yet → send them through onboarding.
+        if (!auth()->user()->boxerProfile) {
+            $this->redirectRoute('onboarding', navigate: false);
+            return;
+        }
+
+        // Restore this week's recap so it survives navigation/refresh (it's not lost on re-render).
+        $this->weeklyConclusion = Cache::get($this->recapKey());
+    }
+
+    private function recapKey(): string
+    {
+        return 'weekrecap:' . auth()->id() . ':' . Carbon::now()->startOfWeek(auth()->user()->weekStartDay())->toDateString();
+    }
+
+    /** Step the week strip back one week. */
+    public function prevWeek(): void
+    {
+        $this->weekOffset--;
+    }
+
+    /** Step forward, but never past the current week. */
+    public function nextWeek(): void
+    {
+        if ($this->weekOffset < 0) {
+            $this->weekOffset++;
+        }
+    }
+
     public function render()
     {
         $user    = auth()->user();
@@ -33,8 +70,7 @@ class Dashboard extends Component
         // Today
         $todayLog       = $user->dailyLogs()->whereDate('log_date', today())->first();
         $waterToday     = (float) ($todayLog?->water_liters ?? 0);
-        $todayCalories  = (int) ($user->dailyLogs()->whereDate('log_date', today())->value('calories_consumed') ?? 0);
-        $activeInjuries = $user->injuries()->where('status', 'active')->count();
+        $todayCalories  = (int) $user->meals()->whereDate('eaten_at', today())->sum('calories'); // live sum, matches Nutrition
         $nextFight      = $user->fights()->where('result', 'upcoming')->orderBy('fight_date')->first();
 
         // Weight — real-time weigh-ins
@@ -47,26 +83,42 @@ class Dashboard extends Component
         $sweatLoss = ($pre && $post) ? round($pre->weight_kg - $post->weight_kg, 1) : null;
         $weightTrend = $this->weightTrend($user);
 
-        // This week (Mon → today)
-        $thisWeekStart = Carbon::now()->startOfWeek(Carbon::MONDAY);
-        $thisWeekEnd   = $thisWeekStart->copy()->addDays(6);
-        $thisWeekLogs  = $this->logsForRange($user, $thisWeekStart, Carbon::now());
-        $thisWeekDays  = $this->buildWeekDays($thisWeekStart, $thisWeekLogs, clampToToday: true);
-        $tw            = $this->summarizeWeek($thisWeekLogs->values());
+        // Week strip — navigable. offset 0 = this week, negative = past weeks.
+        // Each fighter's week starts on the weekday they registered (personal cadence).
+        $isCurrentWeek = $this->weekOffset === 0;
+        $weekStart   = Carbon::now()->startOfWeek($user->weekStartDay())->addWeeks($this->weekOffset);
+        $weekEnd     = $weekStart->copy()->addDays(6);
+        $rangeEnd    = $isCurrentWeek ? Carbon::now() : $weekEnd;
+        $weekLogs    = $this->logsForRange($user, $weekStart, $rangeEnd);
+        $weekDays    = $this->buildWeekDays($weekStart, $weekLogs, clampToToday: $isCurrentWeek);
+        $weekSummary = $this->summarizeWeek($weekLogs->values());
 
-        // Last week (Mon → Sun of the previous calendar week)
-        $lastWeekStart = $thisWeekStart->copy()->subWeek();
-        $lastWeekEnd   = $lastWeekStart->copy()->addDays(6);
-        $lastWeekLogs  = $this->logsForRange($user, $lastWeekStart, $lastWeekEnd);
-        $lastWeekDays  = $this->buildWeekDays($lastWeekStart, $lastWeekLogs);
-        $lw            = $this->summarizeWeek($lastWeekLogs->values());
+        $weekTitle = match (true) {
+            $this->weekOffset === 0  => __('This Week'),
+            $this->weekOffset === -1 => __('Last Week'),
+            default                  => __(':n weeks ago', ['n' => abs($this->weekOffset)]),
+        };
+        $weekRange = $weekStart->translatedFormat('M j') . ' – ' . ($isCurrentWeek ? __('today') : $weekEnd->translatedFormat('M j'));
+
+        // Proactive coaching — CORNER flags patterns in the data without being asked (free, rule-based).
+        $insights = CornerInsights::for($user);
+
+        // Plan vs reality — today's planned sessions/targets + this week's adherence, if a plan is active.
+        $activePlan   = $user->activePlan();
+        $planProgress = $activePlan ? PlanProgress::for($user, $activePlan) : null;
+
+        // Hold the very first weekly recap until the fighter has a genuine full week of data,
+        // so their first conclusion reflects real usage — not a 3-day stub right after sign-up.
+        $firstWeekDaysLeft = max(0, 6 - $user->daysSinceJoined());
+        $recapLocked       = $firstWeekDaysLeft > 0;
 
         return view('livewire.dashboard', compact(
             'profile', 'todayLog', 'nextFight',
-            'activeInjuries', 'todayCalories', 'waterToday',
+            'todayCalories', 'waterToday',
             'currentWeight', 'latestWeight', 'weightAgo', 'todayWeighIns', 'sweatLoss', 'weightTrend',
-            'thisWeekDays', 'thisWeekStart', 'thisWeekEnd', 'tw',
-            'lastWeekDays', 'lastWeekStart', 'lastWeekEnd', 'lw'
+            'weekDays', 'weekSummary', 'weekTitle', 'weekRange', 'isCurrentWeek',
+            'insights', 'activePlan', 'planProgress',
+            'recapLocked', 'firstWeekDaysLeft'
         ))->layout('layouts.app');
     }
 
@@ -116,6 +168,7 @@ class Dashboard extends Component
             $future = $clampToToday && $date->isAfter(today());
 
             $days->push([
+                'date'    => $date->toDateString(),
                 'label'   => $date->format('D'),
                 'day_num' => $date->format('j'),
                 'log'     => $log,
@@ -155,7 +208,7 @@ class Dashboard extends Component
     public function generateConclusion(): void
     {
         $user  = auth()->user();
-        $start = Carbon::now()->startOfWeek(Carbon::MONDAY);
+        $start = Carbon::now()->startOfWeek($user->weekStartDay());
         $logs  = $this->logsForRange($user, $start, Carbon::now())->values();
         $s     = $this->summarizeWeek($logs);
 
@@ -176,10 +229,22 @@ class Dashboard extends Component
             . "- Soda: {$soda} | Alcohol: {$alcohol} drinks\n"
             . ($fightDays !== null ? "- Next fight in {$fightDays} days\n" : "- No fight scheduled\n");
 
-        $system = "You are CORNER, an elite boxing coach. Given a fighter's week of data, write a tight end-of-week conclusion in 4-6 sentences: what went well, the biggest concern, and the single most important focus for next week. Be direct and specific, reference the actual numbers, address the fighter by first name.";
+        $system = "You are CORNER, an elite boxing coach. Given a fighter's week of data, write a SHORT, punchy end-of-week recap in markdown: one strong opening line, then exactly 3 bullet points — '✅ **Went well:**', '⚠️ **Watch:**', and '🎯 **Next week:**'. Bold the key numbers, address the fighter by first name, reference the real numbers, and keep the whole thing under ~80 words.";
 
-        $this->weeklyConclusion = Corner::ask([['role' => 'user', 'content' => $facts]], $system, 'claude-sonnet-4-6', 500)
-            ?? $this->computedVerdict($s, $sessionCount, $weightDelta, $soda + $alcohol, $fightDays);
+        if ($user->isFrench()) {
+            $system .= " Write the ENTIRE recap in natural, fluent French (translate the three bullet labels too).";
+        }
+
+        // If the AI is on but the user has spent today's recap allowance, use the computed verdict.
+        if (Corner::enabled() && !Corner::allow('weekly')) {
+            $this->weeklyConclusion = $this->computedVerdict($s, $sessionCount, $weightDelta, $soda + $alcohol, $fightDays);
+        } else {
+            $this->weeklyConclusion = Corner::ask([['role' => 'user', 'content' => $facts]], $system, 'claude-sonnet-4-6', 400)
+                ?? $this->computedVerdict($s, $sessionCount, $weightDelta, $soda + $alcohol, $fightDays);
+        }
+
+        // Persist it so it doesn't vanish when the page re-renders or the fighter navigates away.
+        Cache::put($this->recapKey(), $this->weeklyConclusion, now()->addDays(8));
     }
 
     private function computedVerdict(array $s, int $sessions, ?float $weightDelta, int $emptyDrinks, ?int $fightDays): string

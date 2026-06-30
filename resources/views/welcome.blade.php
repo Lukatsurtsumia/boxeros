@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BoxerOS — Your Corner, In Your Pocket</title>
-    <meta name="description" content="The all-in-one training companion for professional boxers. Track weight, nutrition, hydration, injuries and fights — and talk to an AI coach that actually knows you.">
+    <title>BoxerOS — {{ __('Your Corner, In Your Pocket') }}</title>
+    <meta name="description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.') }}">
+    {{-- Soft-launch: keep BoxerOS out of search engines. Remove this line when you want public discovery. --}}
+    <meta name="robots" content="noindex, nofollow">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -228,8 +230,9 @@
         <div class="wrap nav-inner">
             <div class="logo"><span class="r">BOXER</span>OS</div>
             <div class="nav-links">
-                <a href="{{ route('login') }}" class="btn-ghost">Log in</a>
-                <a href="{{ route('register') }}" class="btn-red">Get Started</a>
+                @include('partials.lang-toggle')
+                <a href="{{ route('login') }}" class="btn-ghost">{{ __('Log in') }}</a>
+                <a href="{{ route('register') }}" class="btn-red">{{ __('Get Started') }}</a>
             </div>
         </div>
     </header>
@@ -238,21 +241,19 @@
     <section class="hero">
         <div class="wrap hero-grid">
             <div>
-                <div class="tag rise d1">🥊 Built for professional fighters</div>
-                <h1 class="rise d2">Your corner.<br><span class="grad">In your pocket.</span></h1>
+                <div class="tag rise d1">🥊 {{ __('Built for professional fighters') }}</div>
+                <h1 class="rise d2">{{ __('Your corner.') }}<br><span class="grad">{{ __('In your pocket.') }}</span></h1>
                 <p class="lead rise d3">
-                    The all-in-one command center for serious boxers. Track weight, nutrition,
-                    hydration, injuries and fight camps — then talk to an AI coach that actually
-                    knows your numbers.
+                    {{ __('The all-in-one command center for serious boxers. Track weight, nutrition, hydration and fight camps — then talk to an AI coach that actually knows your numbers.') }}
                 </p>
                 <div class="cta-row rise d4">
-                    <a href="{{ route('register') }}" class="btn-hero">Create Free Account →</a>
-                    <a href="{{ route('login') }}" class="btn-text">I already have an account</a>
+                    <a href="{{ route('register') }}" class="btn-hero">{{ __('Create Free Account') }} →</a>
+                    <a href="{{ route('login') }}" class="btn-text">{{ __('I already have an account') }}</a>
                 </div>
                 <div class="hero-stats rise d5">
-                    <div class="hstat"><div class="num gold">7</div><div class="lbl">Tracking tools</div></div>
-                    <div class="hstat"><div class="num red">24/7</div><div class="lbl">AI coach</div></div>
-                    <div class="hstat"><div class="num">$0</div><div class="lbl">To start</div></div>
+                    <div class="hstat"><div class="num gold">7</div><div class="lbl">{{ __('Tracking tools') }}</div></div>
+                    <div class="hstat"><div class="num red">24/7</div><div class="lbl">{{ __('AI coach') }}</div></div>
+                    <div class="hstat"><div class="num">$0</div><div class="lbl">{{ __('To start') }}</div></div>
                 </div>
             </div>
 
@@ -265,43 +266,43 @@
                     </div>
 
                     <div class="pcard">
-                        <div class="plabel">Fighter</div>
+                        <div class="plabel">{{ __('Fighter') }}</div>
                         <div class="pfighter">
                             <div class="pavatar">🥊</div>
                             <div>
                                 <div class="pname">"Iron" Mike</div>
-                                <div class="psub">Welterweight · Orthodox</div>
+                                <div class="psub">{{ __('Welterweight') }} · {{ __('Orthodox') }}</div>
                             </div>
                         </div>
                         <div class="precord">
-                            <div class="pstat"><div class="n" style="color:var(--gold);">12</div><div class="l">Wins</div></div>
-                            <div class="pstat"><div class="n" style="color:var(--blood);">2</div><div class="l">Losses</div></div>
-                            <div class="pstat"><div class="n">1</div><div class="l">Draw</div></div>
+                            <div class="pstat"><div class="n" style="color:var(--gold);">12</div><div class="l">{{ __('Wins') }}</div></div>
+                            <div class="pstat"><div class="n" style="color:var(--blood);">2</div><div class="l">{{ __('Losses') }}</div></div>
+                            <div class="pstat"><div class="n">1</div><div class="l">{{ __('Draw') }}</div></div>
                         </div>
                     </div>
 
                     <div class="pfight">
-                        <div class="lab">Next Fight</div>
+                        <div class="lab">{{ __('Next Fight') }}</div>
                         <div class="nm">vs Carlos "Thunder" Reyes</div>
-                        <div class="dy">18 days · MGM Grand, Las Vegas</div>
+                        <div class="dy">18 {{ __('days') }} · MGM Grand, Las Vegas</div>
                     </div>
 
                     <div class="pcard">
-                        <div class="plabel">Today</div>
-                        <div class="prow"><span>💧 Water</span><span style="color:#3498db;">2.5 / 3L</span></div>
+                        <div class="plabel">{{ __('Today') }}</div>
+                        <div class="prow"><span>💧 {{ __('Water') }}</span><span style="color:#3498db;">2.5 / 3L</span></div>
                         <div class="ptrack"><div class="pfill" style="width:83%; background: linear-gradient(90deg,#2980b9,#3498db);"></div></div>
-                        <div class="prow"><span>🔥 Calories</span><span style="color:var(--gold);">2100 / 2500</span></div>
+                        <div class="prow"><span>🔥 {{ __('Calories') }}</span><span style="color:var(--gold);">2100 / 2500</span></div>
                         <div class="ptrack"><div class="pfill" style="width:84%; background: linear-gradient(90deg,#e67e22,#f39c12);"></div></div>
                     </div>
 
                     <div class="pgrid">
                         <div class="pmini">
-                            <div class="l" style="color:#2ecc71;">Weight</div>
+                            <div class="l" style="color:#2ecc71;">{{ __('Weight') }}</div>
                             <div class="v">69.8<span style="font-size:0.65rem;color:rgba(255,255,255,0.3)"> kg</span></div>
                         </div>
                         <div class="pmini">
-                            <div class="l" style="color:#e74c3c;">Injury</div>
-                            <div class="v" style="font-size:0.85rem;color:var(--gold);">Recovering</div>
+                            <div class="l" style="color:var(--gold);">{{ __('Energy') }}</div>
+                            <div class="v">8<span style="font-size:0.65rem;color:rgba(255,255,255,0.3)">/10</span></div>
                         </div>
                     </div>
                 </div>
@@ -312,50 +313,50 @@
     {{-- Value strip --}}
     <div class="value-strip">
         <div class="wrap value-grid">
-            <div class="value-item"><div class="n">Daily</div><div class="t">Weight & body logs</div></div>
-            <div class="value-item"><div class="n">Auto</div><div class="t">AI calorie estimates</div></div>
-            <div class="value-item"><div class="n">Live</div><div class="t">Fight countdowns</div></div>
-            <div class="value-item"><div class="n">Smart</div><div class="t">Injury recovery advice</div></div>
+            <div class="value-item"><div class="n">{{ __('Daily') }}</div><div class="t">{{ __('Weight & body logs') }}</div></div>
+            <div class="value-item"><div class="n">{{ __('Auto') }}</div><div class="t">{{ __('AI calorie estimates') }}</div></div>
+            <div class="value-item"><div class="n">{{ __('Live') }}</div><div class="t">{{ __('Fight countdowns') }}</div></div>
+            <div class="value-item"><div class="n">{{ __('Weekly') }}</div><div class="t">{{ __('AI training plans') }}</div></div>
         </div>
     </div>
 
     {{-- Features --}}
     <section class="block">
         <div class="wrap">
-            <div class="eyebrow">Everything in one place</div>
-            <h2 class="section-title">Built for the whole camp</h2>
-            <p class="section-sub">From the weigh-in to the final bell — every part of your preparation, tracked and connected.</p>
+            <div class="eyebrow">{{ __('Everything in one place') }}</div>
+            <h2 class="section-title">{{ __('Built for the whole camp') }}</h2>
+            <p class="section-sub">{{ __('From the weigh-in to the final bell — every part of your preparation, tracked and connected.') }}</p>
 
             <div class="feature-grid">
                 <div class="fcard">
                     <span class="ficon">⚖️</span>
-                    <div class="ftitle">Weight & Body</div>
-                    <div class="fdesc">Daily weigh-ins, before/after sweat loss, and visual trend charts so your cut never surprises you.</div>
+                    <div class="ftitle">{{ __('Weight & Body') }}</div>
+                    <div class="fdesc">{{ __('Daily weigh-ins, before/after sweat loss, and visual trend charts so your cut never surprises you.') }}</div>
                 </div>
                 <div class="fcard">
                     <span class="ficon">🍽️</span>
-                    <div class="ftitle">Nutrition</div>
-                    <div class="fdesc">Log meals by name or photo. CORNER estimates calories automatically and tracks your daily intake.</div>
+                    <div class="ftitle">{{ __('Nutrition') }}</div>
+                    <div class="fdesc">{{ __('Log meals by name or photo. CORNER estimates calories automatically and tracks your daily intake.') }}</div>
                 </div>
                 <div class="fcard">
                     <span class="ficon">💧</span>
-                    <div class="ftitle">Hydration</div>
-                    <div class="fdesc">One-tap water logging with quick-add buttons. Hit your daily goal every session.</div>
+                    <div class="ftitle">{{ __('Hydration') }}</div>
+                    <div class="fdesc">{{ __('One-tap water logging with quick-add buttons. Hit your daily goal every session.') }}</div>
                 </div>
                 <div class="fcard">
-                    <span class="ficon">🩹</span>
-                    <div class="ftitle">Injury Log</div>
-                    <div class="fdesc">Report injuries and get instant, practical AI recovery guidance — with return-to-training cues.</div>
+                    <span class="ficon">📋</span>
+                    <div class="ftitle">{{ __('Weekly Plans') }}</div>
+                    <div class="fdesc">{{ __('CORNER builds your week — training, nutrition, sleep and weight targets — then tracks it against what you actually do.') }}</div>
                 </div>
                 <div class="fcard">
                     <span class="ficon">📅</span>
-                    <div class="ftitle">Fight Calendar</div>
-                    <div class="fdesc">Countdown to your next bout, opponent and venue details, and your full win/loss record.</div>
+                    <div class="ftitle">{{ __('Fight Calendar') }}</div>
+                    <div class="fdesc">{{ __('Countdown to your next bout, opponent and venue details, and your full win/loss record.') }}</div>
                 </div>
                 <div class="fcard" style="border-color: rgba(192,57,43,0.35);">
                     <span class="ficon">🤖</span>
-                    <div class="ftitle">CORNER — AI Coach</div>
-                    <div class="fdesc">A coach that knows your weight, meals, injuries and fight date. Ask anything, anytime.</div>
+                    <div class="ftitle">{{ __('CORNER — AI Coach') }}</div>
+                    <div class="fdesc">{{ __('A coach that knows your weight, meals, training and fight date. Ask anything, anytime.') }}</div>
                 </div>
             </div>
         </div>
@@ -365,25 +366,23 @@
     <section class="block" style="background: rgba(255,255,255,0.015); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
         <div class="wrap spotlight">
             <div>
-                <div class="eyebrow" style="text-align:left;">Meet CORNER</div>
-                <h2>An AI coach that<br>actually knows you.</h2>
-                <p>CORNER isn't a generic chatbot. It reads your real logs — this week's training,
-                   your current weight versus your goal, active injuries, and how many days until
-                   your next fight — then coaches you on what to do next.</p>
-                <div class="check"><span class="ic">✓</span><span>Personalized weekly training & cut plans</span></div>
-                <div class="check"><span class="ic">✓</span><span>Calorie & macro estimates from a photo</span></div>
-                <div class="check"><span class="ic">✓</span><span>Injury recovery and return-to-training advice</span></div>
-                <div class="check"><span class="ic">✓</span><span>Honest, direct answers — like a real corner</span></div>
+                <div class="eyebrow" style="text-align:left;">{{ __('Meet CORNER') }}</div>
+                <h2>{{ __('An AI coach that actually knows you.') }}</h2>
+                <p>{{ __("CORNER isn't a generic chatbot. It reads your real logs — this week's training, your current weight versus your goal, your meals, and how many days until your next fight — then coaches you on what to do next.") }}</p>
+                <div class="check"><span class="ic">✓</span><span>{{ __('Personalized weekly training & cut plans') }}</span></div>
+                <div class="check"><span class="ic">✓</span><span>{{ __('Calorie & macro estimates from a photo') }}</span></div>
+                <div class="check"><span class="ic">✓</span><span>{{ __('Recovery, sleep and hydration coaching') }}</span></div>
+                <div class="check"><span class="ic">✓</span><span>{{ __('Honest, direct answers — like a real corner') }}</span></div>
             </div>
             <div class="chat-mock">
-                <div class="bubble b-user">I'm 1.2kg over with 18 days to the fight. What do I do this week?</div>
+                <div class="bubble b-user">{{ __("I'm 1.2kg over with 18 days to the fight. What do I do this week?") }}</div>
                 <div class="bubble b-ai">
                     <div class="who">CORNER</div>
-                    You're on track, Mike — 1.2kg in 18 days is a controlled cut, not a crash. Keep
-                    water at 3L through Thursday, drop the evening carbs, and we'll add one extra
-                    roadwork session. Your energy's been 7/10 this week, so you've got room. I'll
-                    map the full week if you want it.
+                    {{ __("You're on track, Mike — 1.2kg in 18 days is a controlled cut, not a crash. Keep water at 3L through Thursday, drop the evening carbs, and we'll add one extra roadwork session. Your energy's been 7/10 this week, so you've got room. I'll map the full week if you want it.") }}
                 </div>
+            </div>
+            <div style="text-align:center; font-size:0.72rem; color: rgba(255,255,255,0.4); margin-top:0.85rem; line-height:1.5;">
+                {!! __('Example reply — CORNER writes <em>every</em> answer from <strong>your own</strong> weight, fight date, energy and logs. No two fighters ever get the same one.') !!}
             </div>
         </div>
     </section>
@@ -391,9 +390,9 @@
     {{-- Final CTA --}}
     <div class="final-cta">
         <div class="final-card">
-            <h2>Ready to take control?</h2>
-            <p>Free to use. No credit card. Set up your fighter profile in under a minute.</p>
-            <a href="{{ route('register') }}" class="btn-hero">Start Training Smarter →</a>
+            <h2>{{ __('Ready to take control?') }}</h2>
+            <p>{{ __('Free to use. No credit card. Set up your fighter profile in under a minute.') }}</p>
+            <a href="{{ route('register') }}" class="btn-hero">{{ __('Start Training Smarter') }} →</a>
         </div>
     </div>
 
@@ -401,7 +400,7 @@
     <footer>
         <div class="wrap foot-inner">
             <div class="logo" style="font-size:1.2rem;"><span class="r">BOXER</span>OS</div>
-            <span>© {{ date('Y') }} BoxerOS · Your corner, in your pocket.</span>
+            <span>© {{ date('Y') }} BoxerOS · {{ __('Your corner, in your pocket.') }}</span>
         </div>
     </footer>
 

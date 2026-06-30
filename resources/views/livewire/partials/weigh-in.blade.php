@@ -5,20 +5,20 @@
 --}}
 @php
     $chips = [
-        'morning'      => '🌅 Morning',
-        'afternoon'    => '☀️ Afternoon',
-        'night'        => '🌙 Night',
-        'pre_workout'  => '🥊 Pre',
-        'post_workout' => '💦 Post',
+        'morning'      => '🌅 ' . __('Morning'),
+        'afternoon'    => '☀️ ' . __('Afternoon'),
+        'night'        => '🌙 ' . __('Night'),
+        'pre_workout'  => '🥊 ' . __('Pre'),
+        'post_workout' => '💦 ' . __('Post'),
     ];
 @endphp
 <div class="card">
-    <div class="section-label mb-2">⚖️ Log Weigh-in</div>
+    <div class="section-label mb-2">⚖️ {{ __('Log Weigh-in') }}</div>
     <form wire:submit="saveWeighIn" class="flex gap-2">
-        <input type="number" step="0.1" inputmode="decimal" wire:model="weighInValue"
-               class="input-dark" placeholder="e.g. 74.2 kg" style="flex: 1;">
+        <input type="number" step="0.1" inputmode="decimal" min="30" max="300" wire:model="weighInValue"
+               class="input-dark" placeholder="{{ __('e.g. 74.2 kg') }}" style="flex: 1;">
         <button type="submit" class="btn-primary px-5">
-            <span wire:loading.remove wire:target="saveWeighIn">Log</span>
+            <span wire:loading.remove wire:target="saveWeighIn">{{ __('Save') }}</span>
             <span wire:loading wire:target="saveWeighIn">…</span>
         </button>
     </form>
@@ -35,6 +35,6 @@
         @endforeach
     </div>
     @unless($compact ?? false)
-    <p class="text-xs mt-2" style="color: var(--text-muted);">Log anytime you weigh in — no pressure if you don't know it.</p>
+    <p class="text-xs mt-2" style="color: var(--text-muted);">{{ __('Log anytime you weigh in — no pressure if you don\'t know it.') }}</p>
     @endunless
 </div>

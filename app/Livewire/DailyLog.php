@@ -15,7 +15,7 @@ class DailyLog extends Component
 
     public float $water_liters = 0;
     public int $soda_cans = 0;
-    public array $alcohol_drinks = ['beer' => 0, 'wine' => 0, 'whiskey' => 0, 'vodka' => 0, 'champagne' => 0];
+    public array $alcohol_drinks = ['beer' => 0, 'wine' => 0, 'whiskey' => 0, 'coffee' => 0];
     public array $sessions = [];                  // [['type'=>'boxing','minutes'=>60,'when'=>'morning'], ...]
     public $sleep_hours;
     public $training_minutes, $training_type = ''; // derived from sessions (display + back-compat)
@@ -23,12 +23,13 @@ class DailyLog extends Component
     public int $energy_level = 5;
     public $notes;
 
+    // [emoji, label, serving, kcal, isAlcohol]. Coffee is tracked here for convenience but is
+    // NOT alcohol — it's excluded from alcohol_units so it never triggers alcohol warnings.
     public const DRINKS = [
-        'beer'      => ['🍺', 'Beer', 50, 215],
-        'wine'      => ['🍷', 'Wine', 15, 125],
-        'whiskey'   => ['🥃', 'Whiskey', 4, 95],
-        'vodka'     => ['🍸', 'Vodka', 4, 90],
-        'champagne' => ['🥂', 'Champagne', 12, 90],
+        'beer'    => ['🍺', 'Beer', '50cl', 215, true],
+        'wine'    => ['🍷', 'Wine', '15cl', 125, true],
+        'whiskey' => ['🥃', 'Whiskey', '4cl', 95, true],
+        'coffee'  => ['☕', 'Coffee', '1 cup', 5, false],
     ];
 
     public const SESSION_TYPES = [
@@ -48,7 +49,8 @@ class DailyLog extends Component
 
     public function mount(): void
     {
-        $this->log_date = today()->toDateString();
+        // Open a specific day when linked from the dashboard (?date=Y-m-d); otherwise today.
+        $this->log_date = $this->safeDate((string) request('date', '')) ?? today()->toDateString();
         $this->loadDay();
     }
 
@@ -56,7 +58,7 @@ class DailyLog extends Component
     {
         $this->water_liters     = 0;
         $this->soda_cans        = 0;
-        $this->alcohol_drinks   = ['beer' => 0, 'wine' => 0, 'whiskey' => 0, 'vodka' => 0, 'champagne' => 0];
+        $this->alcohol_drinks   = ['beer' => 0, 'wine' => 0, 'whiskey' => 0, 'coffee' => 0];
         $this->sessions         = [];
         $this->sleep_hours      = null;
         $this->training_minutes = null;
@@ -117,6 +119,7 @@ class DailyLog extends Component
         $this->log_date = today()->toDateString();
         $this->resetFields();
         $this->loadDay();
+        $this->ensureSessionRow();
         $this->showForm = true;
     }
 
@@ -127,6 +130,7 @@ class DailyLog extends Component
         $this->resetFields();
         $this->log_date = $safe;
         $this->loadDay();
+        $this->ensureSessionRow();
         $this->showForm = true;
     }
 
@@ -150,8 +154,21 @@ class DailyLog extends Component
 
     public function addSession(): void
     {
-        $this->sessions[] = ['type' => 'boxing', 'minutes' => null, 'when' => $this->currentWhen()];
+        $this->sessions[] = $this->blankSession();
         $this->persist();
+    }
+
+    private function blankSession(): array
+    {
+        return ['type' => 'boxing', 'minutes' => null, 'when' => $this->currentWhen(), 'time' => now()->format('H:i')];
+    }
+
+    /** Make sure the form always shows at least one session row (visible for new users). */
+    private function ensureSessionRow(): void
+    {
+        if (empty($this->sessions)) {
+            $this->sessions = [$this->blankSession()];
+        }
     }
 
     public function removeSession(int $index): void
@@ -163,6 +180,21 @@ class DailyLog extends Component
 
     public function updated($property): void
     {
+        // Clamp numeric inputs so a negative or out-of-range value can't stick in the UI.
+        if ($property === 'sleep_hours' && $this->sleep_hours !== null && $this->sleep_hours !== '') {
+            $this->sleep_hours = max(0, min(24, (int) $this->sleep_hours));
+        }
+        if ($property === 'water_liters') {
+            $this->water_liters = max(0, min(20, (float) $this->water_liters));
+        }
+        if (str_starts_with($property, 'sessions')) {
+            foreach ($this->sessions as $i => $s) {
+                if (($s['minutes'] ?? null) !== null && $s['minutes'] !== '') {
+                    $this->sessions[$i]['minutes'] = max(0, min(600, (int) $s['minutes']));
+                }
+            }
+        }
+
         if (in_array($property, self::AUTOSAVE_FIELDS, true) || str_starts_with($property, 'sessions')) {
             $this->persist();
         }
@@ -194,6 +226,7 @@ class DailyLog extends Component
                 'type'    => $type,
                 'minutes' => ($s['minutes'] === null || $s['minutes'] === '') ? null : max(0, min(600, (int) $s['minutes'])),
                 'when'    => in_array($s['when'] ?? '', ['morning', 'afternoon', 'evening'], true) ? $s['when'] : 'morning',
+                'time'    => (isset($s['time']) && preg_match('/^\d{1,2}:\d{2}$/', (string) $s['time'])) ? $s['time'] : null,
             ];
         }
         $totalMin  = array_sum(array_map(fn ($s) => (int) ($s['minutes'] ?? 0), $sessions));
@@ -208,7 +241,8 @@ class DailyLog extends Component
                 'water_liters'     => max(0, min(20, (float) $this->water_liters)),
                 'soda_cans'        => max(0, min(30, (int) $this->soda_cans)),
                 'alcohol_drinks'   => $drinks,
-                'alcohol_units'    => array_sum($drinks),
+                // Only real alcohol counts as a "unit" — coffee is excluded.
+                'alcohol_units'    => collect($drinks)->filter(fn ($n, $k) => self::DRINKS[$k][4] ?? false)->sum(),
                 'sessions'         => $sessions,
                 'training_minutes' => $totalMin ?: null,
                 'training_type'    => $firstType,
@@ -226,9 +260,7 @@ class DailyLog extends Component
 
         $logs = $user->dailyLogs()->orderByDesc('log_date')->take(14)->get();
 
-        $confirmedCalories = $user->dailyLogs()
-            ->whereDate('log_date', today())
-            ->value('calories_consumed');
+        $confirmedCalories = (int) $user->meals()->whereDate('eaten_at', today())->sum('calories');
 
         $todayWeighIns = $user->weightEntries()->whereDate('weighed_at', today())->orderByDesc('weighed_at')->get();
         $pre  = $todayWeighIns->firstWhere('context', 'pre_workout');
@@ -244,17 +276,34 @@ class DailyLog extends Component
         $nextFight = $user->fights()->where('result', 'upcoming')->orderBy('fight_date')->first();
         $fightDays = $nextFight ? max(0, (int) now()->diffInDays($nextFight->fight_date, false)) : null;
 
-        $drinkTypes  = self::DRINKS;
-        $sessionTypes = self::SESSION_TYPES;
-        $totalDrinks = array_sum(array_intersect_key($this->alcohol_drinks, $drinkTypes));
-        $alcoholKcal = 0;
-        foreach ($drinkTypes as $k => $d) {
-            $alcoholKcal += ($this->alcohol_drinks[$k] ?? 0) * $d[3];
+        // Today's planned sessions from the active plan — so logging is guided by the plan.
+        $planToday = null;
+        if ($this->log_date === today()->toDateString() && ($plan = $user->activePlan())) {
+            $dayKey    = \App\Models\Plan::DAYS[today()->dayOfWeekIso - 1];
+            $planToday = $plan->dayPlan($dayKey);
+        }
+
+        $sessionTypes = array_map(fn ($label) => __($label), self::SESSION_TYPES);
+
+        // Split: alcohol (beer/wine/whiskey) vs caffeine (coffee). Coffee is not an alcohol unit.
+        $alcoholTypes = array_filter(self::DRINKS, fn ($d) => $d[4] ?? false);
+        $coffeeTypes  = array_filter(self::DRINKS, fn ($d) => !($d[4] ?? false));
+
+        $alcoholCount = 0;
+        $alcoholKcal  = 0;
+        foreach ($alcoholTypes as $k => $d) {
+            $n = (int) ($this->alcohol_drinks[$k] ?? 0);
+            $alcoholCount += $n;
+            $alcoholKcal  += $n * $d[3];
+        }
+        $coffeeCups = 0;
+        foreach ($coffeeTypes as $k => $d) {
+            $coffeeCups += (int) ($this->alcohol_drinks[$k] ?? 0);
         }
 
         return view('livewire.daily-log', compact(
             'logs', 'confirmedCalories', 'todayWeighIns', 'sweatLoss', 'weightByDate', 'fightDays',
-            'drinkTypes', 'sessionTypes', 'totalDrinks', 'alcoholKcal'
+            'alcoholTypes', 'coffeeTypes', 'alcoholCount', 'alcoholKcal', 'coffeeCups', 'sessionTypes', 'planToday'
         ))->layout('layouts.app');
     }
 }

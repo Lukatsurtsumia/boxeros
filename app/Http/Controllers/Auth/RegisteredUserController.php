@@ -40,6 +40,10 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            // Carry the language the visitor picked on the landing/register page into their account.
+            'locale' => in_array($request->session()->get('locale'), ['en', 'fr'], true)
+                ? $request->session()->get('locale')
+                : 'en',
         ]);
 
         event(new Registered($user));

@@ -4,13 +4,15 @@ A mobile-first, dark-themed web app for boxers to track health, performance, and
 
 ## Features
 
-- **Dashboard** — fighter header, fight countdown, water/calorie progress bars, weight trend chart
+- **Dashboard** — fighter + next-fight countdown, today snapshot, weight trend + goal, weekly review, CORNER coaching flag
 - **Boxer Profile** — nickname, weight class, record (W/L/D), gym, trainer, stance, bio, avatar upload
-- **Daily Log** — weight, water (+250ml quick-add), calories, sleep, training notes, mood/energy
-- **Meal Tracker** — log meals with macros and food photo uploads
-- **Injury Tracker** — report injuries with automatic Claude AI recovery advice
+- **Daily Log** — weigh-ins, water (+250ml quick-add), multi-session training, sleep, sugar/alcohol/caffeine, mood/energy
+- **Meal Tracker** — log meals; CORNER estimates the calories, you confirm or adjust
+- **Plan** — CORNER builds a periodised weekly training/nutrition plan; the dashboard tracks adherence
 - **Fight Calendar** — upcoming fight countdown and full fight history
-- **CORNER Chatbot** — Claude AI coach with full boxer context (profile, today's log, injuries, next fight)
+- **CORNER Chatbot** — Claude AI coach with full boxer context (profile, today's log, meals, next fight)
+- **Knowledge Base** — admin-curated coaching references
+- **Bilingual** — full English/French UI (per-user) with CORNER replying in the chosen language
 
 ## Stack
 
@@ -91,6 +93,6 @@ php artisan test
 
 | Variable | Description |
 |---|---|
-| `ANTHROPIC_API_KEY` | Enables CORNER chatbot and AI injury recovery advice |
+| `ANTHROPIC_API_KEY` | Enables CORNER chat, meal calorie estimates, and AI plan/weekly-recap generation |
 | `DB_DATABASE` | Database name (`boxeros`) |
 | `APP_URL` | Set to `http://localhost:8090` for local dev |

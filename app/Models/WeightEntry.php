@@ -19,13 +19,13 @@ class WeightEntry extends Model
     public function getContextLabelAttribute(): string
     {
         return [
-            'morning'      => 'Morning',
-            'afternoon'    => 'Afternoon',
-            'night'        => 'Night',
-            'pre_workout'  => 'Pre-workout',
-            'post_workout' => 'Post-workout',
-            'other'        => 'Weigh-in',
-        ][$this->context] ?? 'Weigh-in';
+            'morning'      => __('Morning'),
+            'afternoon'    => __('Afternoon'),
+            'night'        => __('Night'),
+            'pre_workout'  => __('Pre-workout'),
+            'post_workout' => __('Post-workout'),
+            'other'        => __('Weigh-in'),
+        ][$this->context] ?? __('Weigh-in');
     }
 
     public function user()
