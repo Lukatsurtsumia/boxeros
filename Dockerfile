@@ -21,6 +21,9 @@ COPY --chown=application:application . /app
 # Compiled assets from stage 1 (overwrites the source public/build)
 COPY --from=assets --chown=application:application /build/public/build /app/public/build
 
-# PHP dependencies (production only) + writable Laravel dirs
+# PHP dependencies (production only) + writable Laravel dirs + public storage symlink
+# (the symlink lets nginx serve user uploads at /storage/... — it must exist in every
+#  container, so we bake it into the image instead of relying on a one-off artisan call)
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist \
+ && ln -sf /app/storage/app/public /app/public/storage \
  && chown -R application:application /app/storage /app/bootstrap/cache

@@ -57,7 +57,7 @@
                 @elseif($flags->count())
                 <span class="badge" style="background: rgba(243,156,18,0.15); color: var(--gold);">{{ $flags->count() }} {{ __('to check') }}</span>
                 @else
-                <span class="badge" style="background: rgba(46,204,113,0.12); color: #2ecc71;">✓ {{ __('On track') }}</span>
+                <span class="text-lg font-bold" style="color: #2ecc71;" title="{{ __('On track') }}">✓</span>
                 @endif
             </div>
         </div>
