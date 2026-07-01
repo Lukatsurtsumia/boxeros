@@ -271,7 +271,7 @@
                             <div class="pavatar">🥊</div>
                             <div>
                                 <div class="pname">"Iron" Mike</div>
-                                <div class="psub">{{ __('Welterweight') }} · {{ __('Orthodox') }}</div>
+                                <div class="psub">{{ __('Welterweight') }} · {{ __('Right-handed') }}</div>
                             </div>
                         </div>
                         <div class="precord">

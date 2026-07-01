@@ -25,4 +25,17 @@ class BoxerProfile extends Model
     {
         return "{$this->wins}W - {$this->losses}L - {$this->draws}D";
     }
+
+    /**
+     * Human-friendly stance label. We store the boxing terms ('orthodox'/'southpaw')
+     * so CORNER's coaching prompts keep the correct jargon, but show fighters the plain
+     * hand orientation instead — "Orthodox" reads like a religion to many people.
+     */
+    public function stanceLabel(): string
+    {
+        return match ($this->stance) {
+            'southpaw' => __('Left-handed'),
+            default    => __('Right-handed'),
+        };
+    }
 }

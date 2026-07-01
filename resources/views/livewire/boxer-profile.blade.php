@@ -29,7 +29,7 @@
                     <span class="badge badge-gray">{{ $profile->weight_class }}</span>
                     @endif
                     @if($profile)
-                    <span class="badge badge-gray">{{ __(ucfirst($profile->stance)) }}</span>
+                    <span class="badge badge-gray">{{ $profile->stanceLabel() }}</span>
                     @if($profile->experience_years > 0)
                     <span class="badge badge-gray">{{ $profile->experience_years }} {{ __('yr pro') }}</span>
                     @endif
@@ -176,8 +176,8 @@
                     <div>
                         <label class="text-xs mb-1 block" style="color: var(--text-muted);">{{ __('Stance') }}</label>
                         <select wire:model="stance" class="input-dark">
-                            <option value="orthodox">{{ __('Orthodox') }}</option>
-                            <option value="southpaw">{{ __('Southpaw') }}</option>
+                            <option value="orthodox">{{ __('Right-handed') }}</option>
+                            <option value="southpaw">{{ __('Left-handed') }}</option>
                             <option value="switch">{{ __('Switch') }}</option>
                         </select>
                     </div>
@@ -253,7 +253,7 @@
                 ['⚖️', __('Weight'), $currentWeight ? number_format($currentWeight, 1) . ' kg' : '—'],
                 ['📏', __('Height'), $profile->height_cm ? $profile->height_cm . ' cm' : '—'],
                 ['🤜', __('Reach'),  $profile->reach_cm ? $profile->reach_cm . ' cm' : '—'],
-                ['🥊', __('Stance'), __(ucfirst($profile->stance))],
+                ['🥊', __('Stance'), $profile->stanceLabel()],
                 ['⏳', __('Pro yrs'), $profile->experience_years ?: '—'],
             ];
         @endphp
