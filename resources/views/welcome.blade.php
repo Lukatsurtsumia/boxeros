@@ -232,7 +232,7 @@
     {{-- Nav --}}
     <header class="nav">
         <div class="wrap nav-inner">
-            <div class="logo"><span class="r">BOXER</span>OS</div>
+            <div class="logo" translate="no"><span class="r">BOXER</span>OS</div>
             <div class="nav-links">
                 @include('partials.lang-toggle')
                 <a href="{{ route('login') }}" class="btn-ghost">{{ __('Log in') }}</a>
@@ -265,7 +265,7 @@
             <div class="phone-col rise d3">
                 <div class="phone">
                     <div class="phone-bar">
-                        <div class="phone-logo"><span class="r">BOXER</span>OS</div>
+                        <div class="phone-logo" translate="no"><span class="r">BOXER</span>OS</div>
                         <div class="phone-date">Mon, Jun 22</div>
                     </div>
 
@@ -403,7 +403,7 @@
     {{-- Footer --}}
     <footer>
         <div class="wrap foot-inner">
-            <div class="logo" style="font-size:1.2rem;"><span class="r">BOXER</span>OS</div>
+            <div class="logo" style="font-size:1.2rem;" translate="no"><span class="r">BOXER</span>OS</div>
             <span>© {{ date('Y') }} BoxerOS · {{ __('Your corner, in your pocket.') }}</span>
         </div>
     </footer>

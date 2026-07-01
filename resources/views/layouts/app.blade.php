@@ -318,7 +318,7 @@
 
     {{-- Desktop sidebar (≥1024px) --}}
     <aside class="sidebar">
-        <div class="flex items-center gap-2 px-2 mb-6">
+        <div class="flex items-center gap-2 px-2 mb-6" translate="no">
             <span class="font-display text-2xl font-bold" style="color: var(--blood);">BOXER</span>
             <span class="font-display text-2xl font-bold text-white">OS</span>
         </div>
@@ -341,7 +341,7 @@
 
     {{-- Mobile top header (<1024px) --}}
     <div class="top-header flex items-center justify-between lg:hidden">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2" translate="no">
             <span class="font-display text-xl font-bold" style="color: var(--blood);">BOXER</span>
             <span class="font-display text-xl font-bold text-white">OS</span>
         </div>

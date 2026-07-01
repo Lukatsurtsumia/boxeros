@@ -241,7 +241,7 @@
     <div class="auth-wrap">
         <div class="auth-logo">
             <a href="{{ route('home') }}">
-                <div class="auth-logo-text"><em>BOXER</em>OS</div>
+                <div class="auth-logo-text" translate="no"><em>BOXER</em>OS</div>
                 <div class="auth-logo-sub">{{ __('Your personal boxing command center') }}</div>
             </a>
         </div>
