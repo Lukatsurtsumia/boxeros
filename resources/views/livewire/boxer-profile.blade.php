@@ -80,8 +80,8 @@
     @php $liveTotal = (int) $wins + (int) $losses + (int) $draws; @endphp
     <form wire:submit="save" class="space-y-4">
 
-        {{-- Photo --}}
-        <div class="card flex items-center gap-4">
+        {{-- Photo (with zoom & crop) --}}
+        <div class="card flex items-center gap-4" x-data="avatarCropper()" @keydown.escape.window="closeModal()">
             @if($avatar)
                 <img src="{{ $avatar->temporaryUrl() }}" class="w-20 h-20 rounded-2xl object-cover flex-shrink-0" style="border: 2px solid var(--gold);">
             @elseif($profile?->avatar)
@@ -91,14 +91,38 @@
             @endif
             <div class="flex-1 min-w-0">
                 <div class="section-label mb-1">{{ __('Profile Photo') }}</div>
-                <p class="text-xs mb-2" style="color: var(--text-muted);">{{ __('Square image works best · max 2 MB') }}</p>
-                <label class="btn-ghost text-xs px-3 py-1.5 inline-block cursor-pointer">
-                    <span wire:loading.remove wire:target="avatar">{{ __('Choose photo') }}</span>
-                    <span wire:loading wire:target="avatar" style="color: var(--gold);">{{ __('Uploading…') }}</span>
-                    <input type="file" wire:model="avatar" class="hidden" accept="image/*">
-                </label>
+                <p class="text-xs mb-2" style="color: var(--text-muted);">{{ __('Zoom and drag to frame it — any photo works') }}</p>
+                <button type="button" @click="$refs.picker.click()" class="btn-ghost text-xs px-3 py-1.5 inline-block cursor-pointer">
+                    <span x-show="!uploading">{{ __('Choose photo') }}</span>
+                    <span x-show="uploading" style="color: var(--gold);">{{ __('Uploading…') }}</span>
+                </button>
+                <input type="file" x-ref="picker" class="hidden" accept="image/*" @change="openModal($event)">
                 @error('avatar') <div class="text-xs mt-1" style="color: var(--blood);">{{ $message }}</div> @enderror
             </div>
+
+            {{-- Cropper modal (teleported to <body> so it overlays cleanly) --}}
+            <template x-teleport="body">
+                <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.82);">
+                    <div class="card" style="max-width: 22rem; width: 100%;" @click.outside="closeModal()">
+                        <div class="section-label mb-2">{{ __('Adjust your photo') }}</div>
+                        <div style="height: 260px; background:#000; border-radius:14px; overflow:hidden;">
+                            <img x-ref="image" style="max-width:100%; display:block;">
+                        </div>
+                        <div class="flex items-center gap-3 mt-3">
+                            <span style="color: var(--text-muted);">🔍−</span>
+                            <input type="range" min="0" max="1" step="0.01" value="0" x-ref="zoom" @input="setZoom($event.target.value)" class="flex-1" style="accent-color: var(--gold);">
+                            <span style="color: var(--text-muted);">🔍+</span>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button type="button" @click="closeModal()" class="btn-ghost flex-1 py-2">{{ __('Cancel') }}</button>
+                            <button type="button" @click="apply()" x-bind:disabled="uploading" class="btn-primary flex-1 py-2">
+                                <span x-show="!uploading">{{ __('Apply') }}</span>
+                                <span x-show="uploading">{{ __('Uploading…') }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
 
         <div class="grid gap-4 lg:grid-cols-2 items-start">
