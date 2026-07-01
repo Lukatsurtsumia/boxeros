@@ -1,98 +1,92 @@
-# BoxerOS
+<h1 align="center">🥊 BoxerOS</h1>
 
-A mobile-first, dark-themed web app for boxers to track health, performance, and get AI coaching.
+<p align="center">
+  <strong>Your corner, in your pocket.</strong><br>
+  A mobile-first training companion for professional boxers — track weight, nutrition,
+  hydration and fights, and get real coaching from an AI that actually knows your numbers.
+</p>
+
+<p align="center">
+  Laravel&nbsp;12 · Livewire&nbsp;4 · Tailwind&nbsp;CSS · MySQL · Anthropic&nbsp;Claude · English&nbsp;🇬🇧 / French&nbsp;🇫🇷
+</p>
+
+---
+
+## What it is
+
+BoxerOS is a personal "operating system" for a fighter's camp — everything from the weigh-in to
+the final bell in one place. At the center is **CORNER**, an AI coach that reads your *real* logs
+(this week's training, current weight vs. your goal, your meals, days until your next fight) and
+tells you exactly what to do next.
 
 ## Features
 
-- **Dashboard** — fighter + next-fight countdown, today snapshot, weight trend + goal, weekly review, CORNER coaching flag
-- **Boxer Profile** — nickname, weight class, record (W/L/D), gym, trainer, stance, bio, avatar upload
-- **Daily Log** — weigh-ins, water (+250ml quick-add), multi-session training, sleep, sugar/alcohol/caffeine, mood/energy
-- **Meal Tracker** — log meals; CORNER estimates the calories, you confirm or adjust
-- **Plan** — CORNER builds a periodised weekly training/nutrition plan; the dashboard tracks adherence
-- **Fight Calendar** — upcoming fight countdown and full fight history
-- **CORNER Chatbot** — Claude AI coach with full boxer context (profile, today's log, meals, next fight)
-- **Knowledge Base** — admin-curated coaching references
-- **Bilingual** — full English/French UI (per-user) with CORNER replying in the chosen language
+| | |
+|---|---|
+| 🏠 **Dashboard** | Fighter + next-fight countdown, today's snapshot, weight trend & goal, weekly review, top CORNER coaching flag |
+| 👤 **Boxer Profile** | Nickname, weight class, record (W/L/D), gym, trainer, stance, bio, avatar |
+| 📓 **Daily Log** | Weigh-ins, water quick-add, multi-session training, sleep, sugar/alcohol/caffeine, mood & energy |
+| 🍽️ **Meal Tracker** | Log meals by name; CORNER estimates the calories, you confirm or adjust |
+| 📋 **Weekly Plan** | CORNER builds a periodised training + nutrition week; the dashboard tracks adherence |
+| 📅 **Fight Calendar** | Countdown to your next bout + full win/loss record |
+| 🤖 **CORNER** | Claude-powered coach with full boxer context — ask anything, anytime |
 
-## Stack
+- 🌍 **Bilingual** — the entire UI *and* CORNER switch between **English** and **French**, per user.
+- 📆 **Personal weeks** — each fighter's week starts on their sign-up day, so the first recap reflects a full week.
 
-- **Backend:** Laravel 12, PHP 8.4, MySQL
-- **Frontend:** Livewire 4, Tailwind CSS, Vite
+## Screenshots
+
+_Add screenshots of the dashboard, daily log, and CORNER chat here._
+
+## Tech stack
+
+- **Backend:** Laravel 12 · PHP 8.2+ · MySQL
+- **Frontend:** Livewire 4 · Tailwind CSS · Vite · Alpine (Livewire-bundled)
 - **Auth:** Laravel Breeze (Blade)
-- **AI:** Anthropic Claude (`claude-sonnet-4-6`) via direct HTTP
-- **Infrastructure:** Docker via Laravel Sail (WSL2 Ubuntu 24.04)
+- **AI:** Anthropic Claude (Sonnet for chat/plans, Haiku for background tasks) — one entry point in `app/Support/Corner.php`
+- **Local dev:** Docker via Laravel Sail
+- **Production:** Coolify (self-hosted PaaS) on a Hetzner VPS — see [`DEPLOY.md`](DEPLOY.md)
 
-## Getting Started
+## Local development
 
-### Prerequisites
-
-- WSL2 with Ubuntu 24.04 LTS
-- Docker Desktop (with WSL2 integration enabled)
-- Node 22 LTS (via NVM) and Composer 2.9 inside WSL2
-
-### Setup
+Requires Docker (Sail), Node 22, and Composer 2.
 
 ```bash
-# Clone and enter the project (inside WSL2)
-git clone <repo-url> ~/projects/healthy_life
-cd ~/projects/healthy_life
-
-# Install dependencies
-composer install
-npm install
-
-# Configure environment
+git clone https://github.com/Lukatsurtsumia/boxeros.git
+cd boxeros
+composer install && npm install
 cp .env.example .env
 php artisan key:generate
-```
 
-Edit `.env` and set:
-
-```env
-DB_DATABASE=boxeros
-DB_USERNAME=sail
-DB_PASSWORD=password
-
-ANTHROPIC_API_KEY=your-key-here
-```
-
-### Running with Docker/Sail
-
-```bash
-# Start containers (HTTP: 8090, Vite: 5174, MySQL: 3320)
-docker compose up -d
-
-# Run migrations
+docker compose up -d                 # HTTP :8090 · Vite :5174 · MySQL :3320
 docker compose exec laravel.test php artisan migrate
-
-# Build frontend assets (hot reload)
-npm run dev
+npm run build                        # or `npm run dev` for hot reload
 ```
 
-App is available at **http://localhost:8090**
+App → **http://localhost:8090**
 
-### Artisan commands
+## Tests
 
 ```bash
-# Via docker compose
-docker compose exec laravel.test php artisan <command>
-
-# Via Sail alias
-./vendor/bin/sail artisan <command>
+docker compose exec laravel.test php artisan test
 ```
 
-## Running Tests
+## Deployment
 
-```bash
-./vendor/bin/sail artisan test
-# or
-php artisan test
-```
+Production runs on **Coolify** (self-hosted) on a Hetzner VPS, deploying straight from this repo.
+Full step-by-step runbook and the production env template:
+**[`DEPLOY.md`](DEPLOY.md)** · **`.env.production.example`**.
 
-## Environment Variables
+## Environment variables
 
-| Variable | Description |
+| Variable | Purpose |
 |---|---|
-| `ANTHROPIC_API_KEY` | Enables CORNER chat, meal calorie estimates, and AI plan/weekly-recap generation |
-| `DB_DATABASE` | Database name (`boxeros`) |
-| `APP_URL` | Set to `http://localhost:8090` for local dev |
+| `APP_KEY` | Laravel app key — generate with `php artisan key:generate` |
+| `APP_URL` | Base URL (`http://localhost:8090` local / `https://boxeros.app` prod) |
+| `DB_*` | MySQL connection |
+| `ANTHROPIC_API_KEY` | Enables CORNER chat, meal estimates, plan/recap generation *(set a spend cap!)* |
+| `MAIL_*` | SMTP for email verification & password resets (e.g. Brevo) |
+
+---
+
+<p align="center"><sub>© 2026 BoxerOS — private project. All rights reserved.</sub></p>
