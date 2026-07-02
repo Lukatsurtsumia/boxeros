@@ -1,7 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <rect width="64" height="64" rx="15" fill="#0f1012"/>
-  <!-- boxing glove: fist + thumb + wrist cuff, in BoxerOS red -->
-  <rect x="23" y="15" width="27" height="28" rx="13" fill="#e5383b"/>
-  <rect x="12" y="27" width="14" height="15" rx="7" fill="#e5383b"/>
-  <rect x="23" y="41" width="25" height="10" rx="3.5" fill="#c1121f"/>
+  <defs>
+    <linearGradient id="glove" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff5763"/>
+      <stop offset="1" stop-color="#c1121f"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1c20"/>
+      <stop offset="1" stop-color="#0b0c0e"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#bg)"/>
+  <!-- boxing glove: mitt + thumb, red gradient for depth -->
+  <g fill="url(#glove)">
+    <path d="M24 14h9a13 13 0 0 1 13 13v7a12 12 0 0 1-12 12H24a5 5 0 0 1-5-5V19a5 5 0 0 1 5-5z"/>
+    <path d="M19 25a7 7 0 0 0-7 7v1a6 6 0 0 0 6 6h1a1 1 0 0 0 1-1V26a1 1 0 0 0-1-1z"/>
+  </g>
+  <!-- wrist cuff + strap -->
+  <rect x="19" y="44" width="24" height="10" rx="3" fill="#8f0e18"/>
+  <rect x="19" y="47.5" width="24" height="2.4" fill="#6d0a12"/>
+  <!-- knuckle highlight -->
+  <path d="M25 19h7a9 9 0 0 1 5 3" stroke="#ffffff" stroke-opacity="0.32" stroke-width="2.4" fill="none" stroke-linecap="round"/>
 </svg>
