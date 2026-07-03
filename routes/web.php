@@ -17,6 +17,8 @@ Route::get('/', fn () => auth()->check() ? redirect()->route('dashboard') : view
 Route::view('/disclaimer', 'legal.disclaimer')->name('disclaimer');
 Route::view('/privacy', 'legal.privacy')->name('privacy');
 Route::view('/terms', 'legal.terms')->name('terms');
+Route::view('/refunds', 'legal.refunds')->name('refunds');
+Route::view('/pricing', 'pricing')->name('pricing');
 
 // Language switch (English / French) — public so it works on the landing/auth pages too.
 // Stores the choice in the session (used for guests); also persists to the user when signed in.
