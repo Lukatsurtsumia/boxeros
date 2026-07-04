@@ -38,10 +38,19 @@ Route::post('/webhooks/paddle', \App\Http\Controllers\PaddleWebhookController::c
 // so someone whose trial has ended can still get here to subscribe.
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/billing', function () {
-        // Coming back from a completed checkout: once the webhook has activated the
-        // subscription, send them straight into the app.
-        if (request('checkout') === 'success' && auth()->user()->subscribedActive()) {
-            return redirect()->route('dashboard');
+        $user = auth()->user();
+
+        // Coming back from a completed checkout — confirm the payment straight from the
+        // Paddle API (instant, no waiting on the webhook), then send them into the app.
+        if (request('checkout') === 'success') {
+            if (! $user->subscribedActive()) {
+                \App\Support\PaddleSync::refresh($user);
+                $user = $user->fresh();
+            }
+            if ($user->subscribedActive()) {
+                return redirect()->route('dashboard')
+                    ->with('message', __('Payment successful — welcome to BoxerOS! 🥊'));
+            }
         }
 
         return view('billing');

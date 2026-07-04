@@ -8,9 +8,6 @@
     <title>{{ __('Your subscription') }} · BoxerOS</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
-    @if($success && ! $u->subscribedActive())
-        <meta http-equiv="refresh" content="4">
-    @endif
     <style>
         :root { --blood:#c0392b; --blood-dark:#8f0e18; --gold:#f39c12; }
         * { box-sizing: border-box; }
@@ -56,10 +53,11 @@
             <a href="{{ route('dashboard') }}" class="btn" style="margin-top:1.5rem;">{{ __('Go to your dashboard') }} →</a>
 
         @elseif($success)
-            {{-- Just paid — waiting for Paddle's webhook to confirm --}}
-            <span class="pill gold">{{ __('Activating…') }}</span>
-            <h1 style="margin-top:1rem;">{{ __('Payment received') }}</h1>
-            <p>{{ __("We're activating your subscription — this takes a few seconds. This page will refresh automatically.") }}</p>
+            {{-- Just paid — the route confirms via the Paddle API; this is the rare fallback. --}}
+            <span class="pill green">✓ {{ __('Payment received') }}</span>
+            <h1 style="margin-top:1rem;">{{ __('Thank you!') }}</h1>
+            <p>{{ __('Your payment went through. Tap continue to enter BoxerOS.') }}</p>
+            <a href="{{ route('billing') }}?checkout=success" class="btn" style="margin-top:1.5rem;">{{ __('Continue') }} →</a>
 
         @else
             {{-- Trial active (can subscribe early) or trial ended (must subscribe) --}}
