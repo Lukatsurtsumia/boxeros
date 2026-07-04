@@ -357,6 +357,18 @@
     {{-- Page content --}}
     <main class="px-3 pt-4 lg:pt-8 lg:pr-8 lg:pl-[264px]">
         <div class="max-w-lg lg:max-w-6xl mx-auto">
+            {{-- Free-trial banner: shows the countdown + price while a fighter is on trial (paywall on). --}}
+            @php $bu = auth()->user(); @endphp
+            @if($bu && config('services.paddle.gate') && ! $bu->is_admin && ! $bu->subscribedActive() && $bu->onTrial())
+            <a href="{{ route('billing') }}" class="block mb-4" style="text-decoration:none;">
+                <div style="background: rgba(243,156,18,0.12); border:1px solid rgba(243,156,18,0.35); border-radius:12px; padding:0.65rem 0.95rem; display:flex; align-items:center; justify-content:space-between; gap:0.75rem;">
+                    <span style="font-size:0.85rem; color:#e8e8ee;">
+                        🎁 {{ __(':days days left in your free trial', ['days' => $bu->trialDaysLeft()]) }}<span style="color: var(--gold);"> · €7.99/{{ __('mo') }} {{ __('after') }}</span>
+                    </span>
+                    <span style="background: var(--blood); color:#fff; font-weight:700; font-size:0.75rem; padding:0.3rem 0.7rem; border-radius:8px; white-space:nowrap;">{{ __('Upgrade') }} →</span>
+                </div>
+            </a>
+            @endif
             {{ $slot }}
         </div>
     </main>
