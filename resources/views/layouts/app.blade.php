@@ -36,11 +36,13 @@
         }
         * { box-sizing: border-box; }
         [x-cloak] { display: none !important; }
+        html, body { overflow-x: hidden; max-width: 100%; }
         body {
             font-family: 'Inter', sans-serif;
             background: var(--dark);
             color: var(--text-primary);
             min-height: 100vh;
+            width: 100%;
             padding-bottom: calc(5rem + env(safe-area-inset-bottom));
         }
         h1, h2, h3, .font-display { font-family: 'Rajdhani', sans-serif; }
