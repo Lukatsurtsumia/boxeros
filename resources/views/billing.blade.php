@@ -41,7 +41,14 @@
     <div class="wrap">
         <div class="brand" translate="no"><span class="r">BOXER</span>OS</div>
 
-        @if($u->subscribedActive())
+        @if($u->is_admin)
+            {{-- Owner / admin — always full access, never billed --}}
+            <span class="pill green">👑 {{ __('Owner') }}</span>
+            <h1 style="margin-top:1rem;">{{ __('You have full access') }}</h1>
+            <p>{{ __('As the owner of BoxerOS you have unlimited access — no subscription needed.') }}</p>
+            <a href="{{ route('dashboard') }}" class="btn" style="margin-top:1.5rem;">{{ __('Go to your dashboard') }} →</a>
+
+        @elseif($u->subscribedActive())
             {{-- Already subscribed --}}
             <span class="pill green">✓ {{ __('Subscribed') }}</span>
             <h1 style="margin-top:1rem;">{{ __("You're all set") }}</h1>

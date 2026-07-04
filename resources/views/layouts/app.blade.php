@@ -330,6 +330,9 @@
             </a>
             @endforeach
         </nav>
+        <div class="mt-3">
+            @include('partials.membership')
+        </div>
         <div class="mt-4 flex items-center justify-between gap-2">
             @include('partials.lang-toggle')
             <form method="POST" action="{{ route('logout') }}" class="flex-1">
@@ -346,6 +349,7 @@
             <span class="font-display text-xl font-bold text-white">OS</span>
         </div>
         <div class="flex items-center gap-2">
+            @include('partials.membership')
             @include('partials.lang-toggle')
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
