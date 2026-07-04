@@ -116,7 +116,9 @@
                 customData: { user_id: @json((string) $u->id) },
                 settings: {
                     successUrl: @json(route('billing') . '?checkout=success'),
-                    theme: 'dark'
+                    theme: 'dark',
+                    locale: @json(app()->getLocale() === 'fr' ? 'fr' : 'en'),
+                    showAddDiscounts: false
                 }
             });
         }
