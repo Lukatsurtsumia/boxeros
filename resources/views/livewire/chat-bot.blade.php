@@ -9,7 +9,7 @@
             </div>
             <div>
                 <div class="corner-name" translate="no">CORNER <span class="corner-live">● {{ __('Live') }}</span></div>
-                <div class="corner-sub">{{ __('Your AI corner man') }}</div>
+                <div class="corner-sub">{{ __('Your AI boxing coach') }}</div>
             </div>
         </div>
         <div class="flex items-center gap-2">
