@@ -39,4 +39,16 @@ return [
         'key' => env('ANTHROPIC_API_KEY'),
     ],
 
+    // Paddle (billing). `gate` is the master paywall switch — while false, every account
+    // has full access (no lockout), so the code can ship and be tested before going live.
+    'paddle' => [
+        'env'           => env('PADDLE_ENV', 'sandbox'),   // 'sandbox' or 'production'
+        'client_token'  => env('PADDLE_CLIENT_TOKEN'),     // public, used by Paddle.js
+        'api_key'       => env('PADDLE_API_KEY'),          // secret, server-side API
+        'webhook_secret'=> env('PADDLE_WEBHOOK_SECRET'),   // secret, verifies webhooks
+        'price_id'      => env('PADDLE_PRICE_ID'),          // the €7.99/mo price
+        'gate'          => env('PAYMENTS_GATE', false),     // turn the paywall ON/OFF
+        'trial_days'    => (int) env('PADDLE_TRIAL_DAYS', 7),
+    ],
+
 ];

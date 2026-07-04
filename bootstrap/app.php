@@ -20,6 +20,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
         ]);
+
+        // Paywall gate (used on the main app route group).
+        $middleware->alias([
+            'subscribed' => \App\Http\Middleware\EnsureSubscribed::class,
+        ]);
+
+        // Paddle posts webhooks server-to-server, so they carry no CSRF token.
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/paddle',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

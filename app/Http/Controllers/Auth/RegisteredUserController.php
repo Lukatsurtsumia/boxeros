@@ -44,6 +44,8 @@ class RegisteredUserController extends Controller
             'locale' => in_array($request->session()->get('locale'), ['en', 'fr'], true)
                 ? $request->session()->get('locale')
                 : 'en',
+            // Start the free trial from sign-up.
+            'trial_ends_at' => now()->addDays((int) config('services.paddle.trial_days', 7)),
         ]);
 
         event(new Registered($user));

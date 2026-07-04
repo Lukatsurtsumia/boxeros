@@ -18,6 +18,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'locale',
+        'trial_ends_at',
+        'paddle_subscription_id',
+        'paddle_status',
+        'subscription_ends_at',
     ];
 
     /** Whether this user's app language is French. */
@@ -135,6 +139,49 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'trial_ends_at' => 'datetime',
+            'subscription_ends_at' => 'datetime',
         ];
+    }
+
+    // ─── Billing / paywall ──────────────────────────────────────────────────
+
+    /** Still inside the free trial window. */
+    public function onTrial(): bool
+    {
+        return $this->trial_ends_at !== null && $this->trial_ends_at->isFuture();
+    }
+
+    /** Has a live paid subscription (or is cancelled but still within the paid period). */
+    public function subscribedActive(): bool
+    {
+        if (in_array($this->paddle_status, ['active', 'trialing'], true)) {
+            return true;
+        }
+
+        return $this->subscription_ends_at !== null && $this->subscription_ends_at->isFuture();
+    }
+
+    /**
+     * Whether this account may use the app. When the paywall (services.paddle.gate) is
+     * off, everyone passes — so the feature can ship dormant. Admins always have access.
+     */
+    public function hasAppAccess(): bool
+    {
+        if (! config('services.paddle.gate')) {
+            return true;
+        }
+
+        return $this->is_admin || $this->onTrial() || $this->subscribedActive();
+    }
+
+    /** Whole days left in the free trial (0 once it has ended). */
+    public function trialDaysLeft(): int
+    {
+        if ($this->trial_ends_at === null || $this->trial_ends_at->isPast()) {
+            return 0;
+        }
+
+        return max(1, (int) ceil(now()->diffInDays($this->trial_ends_at, false)));
     }
 }

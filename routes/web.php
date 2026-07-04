@@ -31,7 +31,25 @@ Route::post('/locale', function (\Illuminate\Http\Request $request) {
     return back();
 })->name('locale.set');
 
+// Paddle webhook — server-to-server, no auth/CSRF (signature-verified in the controller).
+Route::post('/webhooks/paddle', \App\Http\Controllers\PaddleWebhookController::class)->name('paddle.webhook');
+
+// Billing / upgrade page — reachable by any signed-in user (NOT behind the paywall gate),
+// so someone whose trial has ended can still get here to subscribe.
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/billing', function () {
+        // Coming back from a completed checkout: once the webhook has activated the
+        // subscription, send them straight into the app.
+        if (request('checkout') === 'success' && auth()->user()->subscribedActive()) {
+            return redirect()->route('dashboard');
+        }
+
+        return view('billing');
+    })->name('billing');
+});
+
+// The app itself — gated by the paywall (`subscribed`) on top of auth + verified.
+Route::middleware(['auth', 'verified', 'subscribed'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/boxer/profile', BoxerProfile::class)->name('boxer.profile');
     Route::get('/log', DailyLog::class)->name('daily.log');
