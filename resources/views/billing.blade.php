@@ -51,6 +51,7 @@
             <h1 style="margin-top:1rem;">{{ __("You're all set") }}</h1>
             <p>{{ __('Your BoxerOS subscription is active. Thanks for being in the corner.') }}</p>
             <a href="{{ route('dashboard') }}" class="btn" style="margin-top:1.5rem;">{{ __('Go to your dashboard') }} →</a>
+            <a href="{{ route('billing.manage') }}" class="btn ghost" style="margin-top:0.75rem;">{{ __('Manage or cancel subscription') }}</a>
 
         @elseif($success)
             {{-- Just paid — the route confirms via the Paddle API; this is the rare fallback. --}}

@@ -55,6 +55,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         return view('billing');
     })->name('billing');
+
+    // Send the customer to Paddle's secure portal to cancel / update payment / see invoices.
+    Route::get('/billing/manage', function () {
+        $url = \App\Support\PaddleSync::portalUrl(auth()->user());
+
+        return $url
+            ? redirect()->away($url)
+            : back()->with('message', __('Could not open the billing portal — please try again in a moment.'));
+    })->name('billing.manage');
 });
 
 // The app itself — gated by the paywall (`subscribed`) on top of auth + verified.

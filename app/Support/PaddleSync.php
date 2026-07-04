@@ -64,4 +64,41 @@ class PaddleSync
             return false;
         }
     }
+
+    /**
+     * Create a Paddle customer-portal session and return its URL. The portal lets the
+     * customer cancel, update their payment method, and view invoices — all on Paddle's
+     * secure pages. Returns null if it can't be built.
+     */
+    public static function portalUrl(User $user): ?string
+    {
+        $key = config('services.paddle.api_key');
+        if (! $key) {
+            return null;
+        }
+
+        $base = self::apiBase();
+
+        try {
+            $customerId = Http::withToken($key)->timeout(8)
+                ->get("$base/customers", ['email' => $user->email])
+                ->json('data.0.id');
+
+            if (! $customerId) {
+                return null;
+            }
+
+            $payload = $user->paddle_subscription_id
+                ? ['subscription_ids' => [$user->paddle_subscription_id]]
+                : [];
+
+            $resp = Http::withToken($key)->timeout(8)
+                ->post("$base/customers/{$customerId}/portal-sessions", $payload)
+                ->json();
+
+            return data_get($resp, 'data.urls.general.overview');
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
 }
