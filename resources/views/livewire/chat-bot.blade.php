@@ -1,4 +1,4 @@
-<div class="corner-shell" style="height: calc(100vh - 130px);">
+<div class="corner-shell" id="corner-shell">
 
     {{-- ═══════════ Header ═══════════ --}}
     <div class="corner-header">
@@ -109,11 +109,16 @@
 @keyframes cornerFloat { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-9px) rotate(6deg); } }
 @keyframes cornerPulse { 0% { box-shadow: 0 0 0 0 rgba(46,204,113,0.5); } 70% { box-shadow: 0 0 0 6px rgba(46,204,113,0); } 100% { box-shadow: 0 0 0 0 rgba(46,204,113,0); } }
 
-.corner-shell { display: flex; flex-direction: column; }
+.corner-shell { display: flex; flex-direction: column;
+    /* CSS fallback; a tiny script below measures the real header/nav and sets the exact
+       height, so the chat fills the screen edge-to-edge with no dead space. */
+    height: calc(100dvh - 190px);
+    width: 100%; max-width: 50rem; margin: 0 auto; }
+@media (min-width: 1024px) { .corner-shell { height: calc(100dvh - 90px); } }
 
 /* Header */
 .corner-header { display: flex; align-items: center; justify-content: space-between;
-    padding: 0.7rem 0.9rem; margin-bottom: 0.75rem; border-radius: 16px;
+    padding: 0.55rem 0.8rem; margin-bottom: 0.6rem; border-radius: 16px; flex-shrink: 0;
     background: linear-gradient(135deg, rgba(192,57,43,0.14), rgba(20,21,26,0.6));
     border: 1px solid var(--dark-border); }
 .corner-coach-av { position: relative; width: 46px; height: 46px; border-radius: 14px;
@@ -133,8 +138,9 @@
 .corner-hbtn:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
 
 /* Messages area */
-.corner-messages { flex: 1; overflow-y: auto; padding: 0.25rem 0.35rem 0.5rem; margin-bottom: 0.75rem;
-    display: flex; flex-direction: column; gap: 0.7rem; }
+.corner-messages { flex: 1; overflow-y: auto; padding: 0.25rem 0.35rem 0.5rem; margin-bottom: 0.6rem;
+    display: flex; flex-direction: column; gap: 0.7rem;
+    overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 .corner-messages::-webkit-scrollbar { width: 6px; }
 .corner-messages::-webkit-scrollbar-thumb { background: var(--dark-border); border-radius: 3px; }
 
@@ -198,7 +204,7 @@
     box-shadow: 0 3px 12px rgba(192,57,43,0.4); transition: transform .15s; }
 .corner-send:hover:not(:disabled) { transform: scale(1.06); }
 .corner-send:disabled { opacity: 0.6; cursor: default; }
-.corner-note { font-size: 0.72rem; text-align: center; margin-top: 0.6rem; }
+.corner-note { font-size: 0.72rem; text-align: center; margin-top: 0.4rem; }
 .corner-note-pill { background: rgba(255,255,255,0.05); padding: 0.2rem 0.7rem; border-radius: 999px; }
 
 /* Rendered markdown inside CORNER's replies */
@@ -226,6 +232,21 @@
 </style>
 
 <script>
+// Size the chat to the real available space: viewport minus the sticky app header above
+// and the mobile bottom-nav below. Re-runs on resize/rotation (and when the phone
+// keyboard opens, so the input stays visible).
+function sizeCornerShell() {
+    const s = document.getElementById('corner-shell');
+    if (!s) return;
+    const nav = document.querySelector('.bottom-nav');
+    const navH = (nav && getComputedStyle(nav).display !== 'none') ? nav.offsetHeight : 0;
+    const h = window.innerHeight - s.getBoundingClientRect().top - navH - 10;
+    if (h > 320) s.style.height = h + 'px';
+}
+['resize', 'orientationchange'].forEach((e) => window.addEventListener(e, sizeCornerShell));
+document.addEventListener('livewire:navigated', () => setTimeout(sizeCornerShell, 0));
+sizeCornerShell();
+
 document.addEventListener('livewire:navigated', () => {
     const el = document.getElementById('chat-messages');
     if (el) el.scrollTop = el.scrollHeight;

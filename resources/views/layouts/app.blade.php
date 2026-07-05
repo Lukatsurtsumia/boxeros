@@ -45,6 +45,9 @@
             width: 100%;
             padding-bottom: calc(5rem + env(safe-area-inset-bottom));
         }
+        /* The 5rem bottom padding only exists to clear the mobile bottom-nav — on
+           desktop (nav hidden) it was just dead space at the foot of every page. */
+        @media (min-width: 1024px) { body { padding-bottom: 2rem; } }
         h1, h2, h3, .font-display { font-family: 'Rajdhani', sans-serif; }
 
         /* Cards */
