@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BoxerOS — {{ __('Your Corner, In Your Pocket') }}</title>
+    <title>BoxerOS — {{ __('AI Boxing Coach & Training App') }}</title>
     <meta name="description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.') }}">
     <meta name="robots" content="index, follow">
     <meta name="keywords" content="BoxerOS, boxer os, boxeros app, boxing coach, AI boxing coach, boxing training app, boxing nutrition, weight cut, fight preparation">
@@ -27,14 +27,35 @@
     <script type="application/ld+json">
     {!! json_encode([
         '@context' => 'https://schema.org',
-        '@type' => 'WebApplication',
-        'name' => 'BoxerOS',
-        'alternateName' => ['Boxer OS', 'BoxerOS App'],
-        'url' => url('/'),
-        'applicationCategory' => 'HealthApplication',
-        'operatingSystem' => 'Web, iOS, Android',
-        'description' => __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.'),
-        'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'EUR'],
+        '@graph' => [
+            [
+                '@type' => 'Organization',
+                '@id' => url('/').'#organization',
+                'name' => 'BoxerOS',
+                'url' => url('/'),
+                'logo' => asset('icon-512.png'),
+                'image' => asset('icon-512.png'),
+            ],
+            [
+                '@type' => 'WebSite',
+                '@id' => url('/').'#website',
+                'name' => 'BoxerOS',
+                'url' => url('/'),
+                'publisher' => ['@id' => url('/').'#organization'],
+                'inLanguage' => app()->getLocale(),
+            ],
+            [
+                '@type' => 'WebApplication',
+                'name' => 'BoxerOS',
+                'alternateName' => ['Boxer OS', 'BoxerOS App'],
+                'url' => url('/'),
+                'applicationCategory' => 'HealthApplication',
+                'operatingSystem' => 'Web, iOS, Android',
+                'description' => __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.'),
+                'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'EUR'],
+                'publisher' => ['@id' => url('/').'#organization'],
+            ],
+        ],
     ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
     </script>
 
