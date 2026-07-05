@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- Soft-launch: keep BoxerOS out of search engines. Remove this line when you want public discovery. --}}
-    <meta name="robots" content="noindex, nofollow">
+    <meta name="robots" content="index, follow">
     <title>{{ config('app.name', 'BoxerOS') }}</title>
 
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">

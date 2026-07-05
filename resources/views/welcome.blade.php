@@ -5,8 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>BoxerOS — {{ __('Your Corner, In Your Pocket') }}</title>
     <meta name="description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.') }}">
-    {{-- Soft-launch: keep BoxerOS out of search engines. Remove this line when you want public discovery. --}}
-    <meta name="robots" content="noindex, nofollow">
+    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="BoxerOS, boxer os, boxeros app, boxing coach, AI boxing coach, boxing training app, boxing nutrition, weight cut, fight preparation">
+    <link rel="canonical" href="{{ url('/') }}">
+
+    {{-- Social / search preview (Open Graph + Twitter) --}}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="BoxerOS">
+    <meta property="og:title" content="BoxerOS — {{ __('Your Corner, In Your Pocket') }}">
+    <meta property="og:description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.') }}">
+    <meta property="og:url" content="{{ url('/') }}">
+    <meta property="og:image" content="{{ asset('icon-512.png') }}">
+    <meta property="og:locale" content="{{ app()->getLocale() === 'fr' ? 'fr_FR' : 'en_US' }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="BoxerOS — {{ __('Your Corner, In Your Pocket') }}">
+    <meta name="twitter:description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.') }}">
+    <meta name="twitter:image" content="{{ asset('icon-512.png') }}">
+
+    {{-- Structured data: helps Google understand the brand "BoxerOS". Built from a PHP
+         array so Blade never sees the @-keys as directives. --}}
+    <script type="application/ld+json">
+    {!! json_encode([
+        '@context' => 'https://schema.org',
+        '@type' => 'WebApplication',
+        'name' => 'BoxerOS',
+        'alternateName' => ['Boxer OS', 'BoxerOS App'],
+        'url' => url('/'),
+        'applicationCategory' => 'HealthApplication',
+        'operatingSystem' => 'Web, iOS, Android',
+        'description' => __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.'),
+        'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'EUR'],
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
+    </script>
 
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}">
