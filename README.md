@@ -42,12 +42,12 @@ tells you exactly what to do next.
 <img width="1915" height="1022" alt="Capture d&#39;écran 2026-07-05 084009" src="https://github.com/user-attachments/assets/9d97380a-f555-48c5-b55b-a7425a36fce5" />
  
 <img width="1918" height="1007" alt="Capture d&#39;écran 2026-07-05 083503" src="https://github.com/user-attachments/assets/33c3f6cb-0894-42c0-96a7-d6fb248bc93b" />
-<img width="1912" height="1020" alt="Capture d&#39;écran 2026-07-05 083406" src="https://github.com/user-attachments/assets/62cc70cc-b4f8-429e-ae01-3a36720602e3" />
 <img width="1917" height="1036" alt="Capture d&#39;écran 2026-07-05 081559" src="https://github.com/user-attachments/assets/64c3f0a1-e594-4502-b44f-7e3e2f53389a" />
 <img width="1897" height="1022" alt="Capture d&#39;écran 2026-07-05 081208" src="https://github.com/user-attachments/assets/1e640aaf-fd8a-48c0-92f8-a6cb386d896a" />
 <img width="1918" height="1022" alt="Capture d&#39;écran 2026-07-05 081142" src="https://github.com/user-attachments/assets/de6af457-a5f9-4990-b00d-c4bee9d99ce3" />
 <img width="1907" height="1037" alt="Capture d&#39;écran 2026-07-05 081424" src="https://github.com/user-attachments/assets/6dab3199-e845-4ce2-9566-b9089cca3e27" />
 
+<img width="1912" height="1020" alt="Capture d&#39;écran 2026-07-05 083406" src="https://github.com/user-attachments/assets/62cc70cc-b4f8-429e-ae01-3a36720602e3" />
 
 
 ## Tech stack
