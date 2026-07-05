@@ -66,7 +66,7 @@
                 @elseif($hasLog)
                     <span style="color: var(--text-muted); font-size: 0.7rem;">{{ __('rest') }}</span>
                 @elseif($isToday)
-                    <span style="color: var(--gold); font-size: 0.7rem;">{{ __('today') }}</span>
+                    <span style="color: var(--gold); font-size: 0.9rem; line-height: 1;" title="{{ __('today') }}">●</span>
                 @else
                     <span style="color: var(--text-muted);">·</span>
                 @endif
