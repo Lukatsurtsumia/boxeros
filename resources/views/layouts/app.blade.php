@@ -337,6 +337,12 @@
                 {{ $item['label'] }}
             </a>
             @endforeach
+            @if(auth()->user()?->is_admin)
+            <a href="{{ route('admin.users') }}" class="sidebar-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a3 3 0 10-3-3"/></svg>
+                {{ __('Admin') }}
+            </a>
+            @endif
         </nav>
         <div class="mt-3">
             @include('partials.membership')

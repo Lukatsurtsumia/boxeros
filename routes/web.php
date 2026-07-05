@@ -64,6 +64,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ? redirect()->away($url)
             : back()->with('message', __('Could not open the billing portal — please try again in a moment.'));
     })->name('billing.manage');
+
+    // Admin — user management. The component itself is guarded to admins only (403 otherwise).
+    Route::get('/admin/users', \App\Livewire\AdminUsers::class)->name('admin.users');
 });
 
 // The app itself — gated by the paywall (`subscribed`) on top of auth + verified.
