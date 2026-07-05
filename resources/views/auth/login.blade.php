@@ -6,6 +6,8 @@
         <div class="session-status">{{ session('status') }}</div>
     @endif
 
+    @include('auth._google')
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 

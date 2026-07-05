@@ -217,6 +217,25 @@
         .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(192,57,43,.45); }
         .btn-submit:active { transform: translateY(0); }
 
+        /* Continue with Google */
+        .btn-google {
+            display: flex; align-items: center; justify-content: center; gap: .65rem;
+            width: 100%; padding: .8rem; margin-bottom: .4rem;
+            background: #fff; color: #1f1f1f; border: 1px solid #dadce0; border-radius: 11px;
+            font-family: 'Inter', sans-serif; font-size: .92rem; font-weight: 600;
+            text-decoration: none; cursor: pointer; transition: all .15s;
+        }
+        .btn-google:hover { background: #f6f7f8; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
+        .btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .auth-divider {
+            display: flex; align-items: center; gap: .8rem;
+            margin: 1.1rem 0; color: var(--muted); font-size: .72rem;
+            text-transform: uppercase; letter-spacing: .5px;
+        }
+        .auth-divider::before, .auth-divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+
         /* Form footer links */
         .form-footer {
             display: flex; align-items: center; justify-content: space-between;

@@ -2,6 +2,8 @@
     <div class="auth-title">{{ __('Create your account') }}</div>
     <p class="auth-subtitle">{{ __('Set up your fighter profile and start training smarter.') }}</p>
 
+    @include('auth._google')
+
     <form method="POST" action="{{ route('register') }}">
         @csrf
 

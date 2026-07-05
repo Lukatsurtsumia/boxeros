@@ -39,6 +39,14 @@ return [
         'key' => env('ANTHROPIC_API_KEY'),
     ],
 
+    // Google sign-in (Socialite). The "Continue with Google" button only appears when
+    // client_id is set, so the feature ships dormant until credentials are added.
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', rtrim((string) env('APP_URL'), '/').'/auth/google/callback'),
+    ],
+
     // Paddle (billing). `gate` is the master paywall switch — while false, every account
     // has full access (no lockout), so the code can ship and be tested before going live.
     'paddle' => [

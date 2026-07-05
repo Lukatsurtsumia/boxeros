@@ -17,6 +17,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'google_id',
         'locale',
         'trial_ends_at',
         'paddle_subscription_id',
