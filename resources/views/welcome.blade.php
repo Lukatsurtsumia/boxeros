@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="CtiKNd6GsbyBZjD6cd6xYJtuyxTMyZMa8Jkot_92lIM" />
     <title>BoxerOS — {{ __('AI Boxing Coach & Training App') }}</title>
     <meta name="description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.') }}">
     <meta name="robots" content="index, follow">
