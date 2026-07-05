@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Notifications\EmailVerificationCode;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -184,5 +186,24 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return max(1, (int) ceil(now()->diffInDays($this->trial_ends_at, false)));
+    }
+
+    // ─── Email verification (6-digit code, not a link) ──────────────────────
+
+    /**
+     * Send a 6-digit verification code by email (overrides Laravel's default link email).
+     * The code is stashed in the cache for 15 minutes; the user enters it while staying
+     * logged in — no "click a link in another browser and log in again" friction.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        Cache::put($this->emailVerificationCodeKey(), $code, now()->addMinutes(15));
+        $this->notify(new EmailVerificationCode($code));
+    }
+
+    public function emailVerificationCodeKey(): string
+    {
+        return 'email-verify-code:'.$this->getKey();
     }
 }

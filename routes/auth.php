@@ -44,6 +44,11 @@ Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
+    // Verify with the 6-digit code (stays in the same logged-in session).
+    Route::post('verify-email/code', \App\Http\Controllers\Auth\VerifyEmailCodeController::class)
+        ->middleware('throttle:6,1')
+        ->name('verification.code');
+
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
