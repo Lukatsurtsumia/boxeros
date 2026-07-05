@@ -2,7 +2,26 @@
     <h1 class="font-display text-3xl font-bold">{{ __('Users') }}</h1>
     <p style="color: var(--text-muted); font-size:.85rem; margin-bottom:1.25rem;">{{ __('Everyone registered on BoxerOS.') }}</p>
 
-    {{-- Stats --}}
+    {{-- Visitor stats (people who came to the site — registered or not) --}}
+    <div style="font-size:.72rem; text-transform:uppercase; letter-spacing:.5px; color:var(--text-muted); margin-bottom:.5rem;">👁 {{ __('Visitors') }}</div>
+    <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:.7rem; margin-bottom:.5rem;">
+        <div class="card" style="text-align:center; padding:1rem;">
+            <div class="stat-num" style="color:#3498db;">{{ $visitorsToday }}</div>
+            <div style="color:var(--text-muted); font-size:.68rem; text-transform:uppercase; letter-spacing:.5px;">{{ __('Today') }}</div>
+        </div>
+        <div class="card" style="text-align:center; padding:1rem;">
+            <div class="stat-num" style="color:#3498db;">{{ $visitors7d }}</div>
+            <div style="color:var(--text-muted); font-size:.68rem; text-transform:uppercase; letter-spacing:.5px;">{{ __('Last 7 days') }}</div>
+        </div>
+        <div class="card" style="text-align:center; padding:1rem;">
+            <div class="stat-num" style="color:#3498db;">{{ $visitorsTotal }}</div>
+            <div style="color:var(--text-muted); font-size:.68rem; text-transform:uppercase; letter-spacing:.5px;">{{ __('All time') }}</div>
+        </div>
+    </div>
+    <p style="color:var(--text-muted); font-size:.68rem; margin-bottom:1.25rem;">{{ __('Unique visitors (bots excluded). Counting starts from today.') }}</p>
+
+    {{-- Registered-user stats --}}
+    <div style="font-size:.72rem; text-transform:uppercase; letter-spacing:.5px; color:var(--text-muted); margin-bottom:.5rem;">🥊 {{ __('Registered') }}</div>
     <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:.7rem; margin-bottom:1.25rem;">
         <div class="card" style="text-align:center; padding:1rem;">
             <div class="stat-num">{{ $total }}</div>

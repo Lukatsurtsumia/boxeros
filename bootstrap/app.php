@@ -19,6 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // including Livewire updates, so the whole UI switches together.
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
+            // Count unique daily visitors (for the admin panel).
+            \App\Http\Middleware\TrackVisit::class,
         ]);
 
         // Paywall gate (used on the main app route group).

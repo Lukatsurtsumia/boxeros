@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\SiteVisit;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -67,6 +68,9 @@ class AdminUsers extends Component
             'total' => User::count(),
             'trialing' => User::whereNotNull('trial_ends_at')->where('trial_ends_at', '>', now())->count(),
             'subscribers' => User::whereIn('paddle_status', ['active', 'trialing'])->count(),
+            'visitorsToday' => SiteVisit::whereDate('visited_on', today())->count(),
+            'visitors7d' => SiteVisit::where('visited_on', '>=', today()->subDays(6))->distinct('visitor_hash')->count('visitor_hash'),
+            'visitorsTotal' => SiteVisit::distinct('visitor_hash')->count('visitor_hash'),
         ])->layout('layouts.app');
     }
 }
