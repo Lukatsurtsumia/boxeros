@@ -36,7 +36,9 @@ tells you exactly what to do next.
 
 ## Screenshots
 
-<img width="1882" height="1028" alt="Capture d&#39;écran 202<img width="1915" height="1022" alt="Capture d&#39;écran 2026-07-05 084009" src="https://github.com/user-attachments/assets/9d97380a-f555-48c5-b55b-a7425a36fce5" />
+<img width="1882" height="1028" alt="Capture d&#39;écran 2026-07-05 080921" src="https://github.com/user-attachments/assets/55fd1c91-dc27-4ba3-bc21-2214096c2fd5" />
+
+<img width="1915" height="1022" alt="Capture d&#39;écran 2026-07-05 084009" src="https://github.com/user-attachments/assets/9d97380a-f555-48c5-b55b-a7425a36fce5" />
 <img width="1902" height="1022" alt="Capture d&#39;écran 2026-07-05 083925" src="https://github.com/user-attachments/assets/376c32d5-a227-4be8-b927-64321a4ce50f" />
 6-07-05 080921" src="https://github.com/user-attachments/assets/0104047e-1dc5-4b83-ba59-b48e0c7848cb" />
 <img width="1918" height="1007" alt="Capture d&#39;écran 2026-07-05 083503" src="https://github.com/user-attachments/assets/33c3f6cb-0894-42c0-96a7-d6fb248bc93b" />
