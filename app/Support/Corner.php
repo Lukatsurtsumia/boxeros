@@ -17,7 +17,7 @@ class Corner
      * drain the credits, and a runaway loop is bounded. Tune these as the app grows.
      */
     public const DAILY_LIMITS = [
-        'chat'   => 20,   // CORNER coach messages (Sonnet 4.6 — best answers)
+        'chat'   => 10,   // CORNER coach messages (best model) — keeps free-mode AI cost low
         'weekly' => 5,    // weekly recap regenerations (Sonnet)
         'meal'   => 40,   // meal calorie estimates (Haiku, cheap)
         'memory'  => 60,  // background long-term-memory updates (Haiku, cheap)

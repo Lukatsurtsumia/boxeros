@@ -408,7 +408,7 @@
         <div class="wrap foot-inner">
             <div class="logo" style="font-size:1.2rem;" translate="no"><span class="r">BOXER</span>OS</div>
             <nav style="display:flex; flex-wrap:wrap; gap:0.35rem 1.1rem; margin:0.75rem 0;">
-                <a href="{{ route('pricing') }}" style="color:#9a9aa5; text-decoration:none; font-size:0.85rem;">{{ __('Pricing') }}</a>
+                @if(config('services.paddle.gate'))<a href="{{ route('pricing') }}" style="color:#9a9aa5; text-decoration:none; font-size:0.85rem;">{{ __('Pricing') }}</a>@endif
                 <a href="{{ route('terms') }}" style="color:#9a9aa5; text-decoration:none; font-size:0.85rem;">{{ __('Terms') }}</a>
                 <a href="{{ route('privacy') }}" style="color:#9a9aa5; text-decoration:none; font-size:0.85rem;">{{ __('Privacy') }}</a>
                 <a href="{{ route('refunds') }}" style="color:#9a9aa5; text-decoration:none; font-size:0.85rem;">{{ __('Refunds') }}</a>

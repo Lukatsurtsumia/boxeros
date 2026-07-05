@@ -1,5 +1,7 @@
 @php $mb = auth()->user(); @endphp
-@if($mb)
+{{-- Only shown once payments are switched on (config services.paddle.gate). In free mode
+     the whole subscription pill is hidden so users see a fully free app. --}}
+@if($mb && config('services.paddle.gate'))
 <a href="{{ route('billing') }}" title="{{ __('Membership') }}"
    style="display:inline-flex; align-items:center; gap:0.35rem; padding:0.35rem 0.7rem; border-radius:999px; background:rgba(255,255,255,0.04); border:1px solid var(--dark-border); font-size:0.74rem; font-weight:600; color:#d4d4dc; text-decoration:none; white-space:nowrap;">
     @if($mb->is_admin)
