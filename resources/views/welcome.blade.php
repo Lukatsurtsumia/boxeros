@@ -470,5 +470,6 @@
         </div>
     </footer>
 
+    @include('partials.install-hint')
 </body>
 </html>

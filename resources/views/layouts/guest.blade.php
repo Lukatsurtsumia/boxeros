@@ -272,5 +272,6 @@
             {{ $slot }}
         </div>
     </div>
+    @include('partials.install-hint')
 </body>
 </html>
