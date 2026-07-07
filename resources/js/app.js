@@ -1,15 +1,13 @@
 import './bootstrap';
 
-// Avatar cropper (Cropper.js, self-hosted via Vite — no external CDN).
-// We register an Alpine component the profile page uses to let fighters zoom/position
-// their photo inside a square frame, then upload only the cropped 512×512 result.
+// Avatar cropper — the Cropper.js library is loaded ON DEMAND (dynamic import) the first
+// time a fighter picks a photo, so it stays OUT of the main bundle and doesn't slow the
+// initial page load. It's only ever needed on the profile page.
 //
-// NOTE: Do NOT import or start Alpine here. Livewire 3 bundles and starts its own
-// Alpine — adding a second instance throws "Alpine has already been initialized"
-// and silently breaks every wire:click on the page. Registering a component on the
-// existing Alpine via the `alpine:init` event (below) is safe.
-import Cropper from 'cropperjs';
-import 'cropperjs/dist/cropper.css';
+// NOTE: Do NOT import or start Alpine here. Livewire bundles and starts its own Alpine —
+// a second instance throws "Alpine has already been initialized" and silently breaks every
+// wire:click on the page. Registering a component on the existing Alpine via `alpine:init`
+// (below) is safe.
 
 document.addEventListener('alpine:init', () => {
     window.Alpine.data('avatarCropper', () => ({
@@ -18,12 +16,16 @@ document.addEventListener('alpine:init', () => {
         cropper: null,
         baseRatio: 1,
 
-        // A file was chosen → open the modal and mount Cropper on it.
-        openModal(event) {
+        // A file was chosen → load Cropper (once, on demand), open the modal and mount it.
+        async openModal(event) {
             const file = event.target.files[0];
             if (!file) return;
             const url = URL.createObjectURL(file);
             this.open = true;
+
+            // Split out of the main bundle — fetched only now, cached for next time.
+            const { default: Cropper } = await import('cropperjs');
+            await import('cropperjs/dist/cropper.css');
 
             this.$nextTick(() => {
                 const img = this.$refs.image;
