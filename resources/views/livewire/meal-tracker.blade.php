@@ -44,7 +44,7 @@
             <span wire:loading.remove wire:target="save">{{ __('Log meal') }}</span>
             <span wire:loading wire:target="save">{{ __('CORNER is estimating…') }}</span>
         </button>
-        <p class="text-xs text-center" style="color: var(--text-muted);">{{ __('CORNER estimates the calories — you confirm or adjust after.') }}</p>
+        <p class="text-xs text-center" style="color: var(--text-muted);">{{ __('CORNER estimates the calories - you confirm or adjust after.') }}</p>
     </form>
     @endif
 
@@ -91,7 +91,7 @@
                         <span class="text-xs" style="color:#2ecc71;">✓ {{ __('confirmed') }}</span>
                         <button type="button" wire:click="startFix({{ $meal->id }})" class="text-xs" style="color: var(--text-muted);">{{ __('edit') }}</button>
                         @else
-                        <span class="text-xs" style="color: var(--text-muted);">{{ __('estimate — is it right?') }}</span>
+                        <span class="text-xs" style="color: var(--text-muted);">{{ __('estimate - is it right?') }}</span>
                         @endif
                     </div>
                     @if($meal->calories_source !== 'confirmed')

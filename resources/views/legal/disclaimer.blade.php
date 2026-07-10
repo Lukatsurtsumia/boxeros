@@ -12,13 +12,13 @@
     <h2>Not medical or professional advice</h2>
     <p>Nothing in BoxerOS is a substitute for advice from a qualified physician, registered dietitian,
     certified strength coach, or licensed medical professional. Always consult an appropriate professional
-    before starting, changing, or stopping any training, nutrition, weight-management, or recovery program —
+    before starting, changing, or stopping any training, nutrition, weight-management, or recovery program -
     especially before a weight cut or while managing an injury.</p>
 
     <h2>AI-generated content may be wrong</h2>
     <p>CORNER is powered by AI. Its estimates (including calories and macros) and recommendations are
     approximations and can be inaccurate or incomplete. Verify important numbers and decisions yourself or
-    with a professional. Do not rely on BoxerOS for emergencies — if you are injured or unwell, seek medical
+    with a professional. Do not rely on BoxerOS for emergencies - if you are injured or unwell, seek medical
     care immediately.</p>
 
     <h2>Assumption of risk</h2>

@@ -25,7 +25,7 @@
         <div class="corner-empty">
             <div class="corner-empty-glove">🥊</div>
             <div class="corner-empty-title">{{ __('Step into the corner') }}</div>
-            <p class="corner-empty-sub">{{ __("I know your profile, today's numbers, meals and next fight. Ask me anything — or start a full coaching session.") }}</p>
+            <p class="corner-empty-sub">{{ __("I know your profile, today's numbers, meals and next fight. Ask me anything - or start a full coaching session.") }}</p>
             <button type="button" wire:click="startSession" class="corner-cta">🎯 {{ __('Start a coaching session') }}</button>
             <div class="corner-or"><span>{{ __('or tap a question') }}</span></div>
             <div class="corner-suggest-grid">
@@ -95,7 +95,7 @@
             @if($chatRemaining > 0)
                 <span class="corner-note-pill">{{ $chatRemaining }} {{ $chatRemaining === 1 ? __('coaching message left today') : __('coaching messages left today') }}</span>
             @else
-                {{ __('Daily coaching limit reached — back tomorrow') }}
+                {{ __('Daily coaching limit reached - back tomorrow') }}
             @endif
         </p>
         @endif

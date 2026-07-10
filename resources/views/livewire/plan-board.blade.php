@@ -31,7 +31,7 @@
     @if($planLimitHit)
     <div class="card" style="border-color: rgba(243,156,18,0.4);">
         <div class="text-sm font-semibold" style="color: var(--gold);">{{ __("You've used today's plan builds") }}</div>
-        <div class="text-xs mt-1 leading-relaxed" style="color: var(--text-muted);">{!! __('CORNER builds :count fresh plans a day to keep costs in check. Adjust your current plan by hand instead — tap <strong>Edit</strong> (free &amp; instant) — or regenerate tomorrow.', ['count' => \App\Support\Corner::DAILY_LIMITS['plan']]) !!}</div>
+        <div class="text-xs mt-1 leading-relaxed" style="color: var(--text-muted);">{!! __('CORNER builds :count fresh plans a day to keep costs in check. Adjust your current plan by hand instead - tap <strong>Edit</strong> (free &amp; instant) - or regenerate tomorrow.', ['count' => \App\Support\Corner::DAILY_LIMITS['plan']]) !!}</div>
     </div>
     @endif
 
@@ -50,12 +50,12 @@
             <div class="text-4xl mb-3">📋</div>
             <div class="font-display text-xl font-bold mb-2">{{ __('No plan yet') }}</div>
             <p class="text-sm mb-4 px-4" style="color: var(--text-muted);">
-                {{ __('Let CORNER build a personalised championship week — periodised training, day-by-day nutrition and a moving weight target. Then edit anything and follow it.') }}
+                {{ __('Let CORNER build a personalised championship week - periodised training, day-by-day nutrition and a moving weight target. Then edit anything and follow it.') }}
             </p>
             <button type="button" wire:click="generate" class="btn-gold">✨ {{ __('Generate my plan') }}</button>
         </div>
     @elseif($editing)
-        {{-- ════ EDIT MODE — full control ════ --}}
+        {{-- ════ EDIT MODE - full control ════ --}}
         <div class="card card-gold">
             <div class="font-display text-lg font-bold mb-1">{{ __('Editing plan') }}</div>
             <div class="text-xs" style="color: var(--text-muted);">{{ __("Change sessions, minutes, calories, sleep and weight for any day. Set minutes to 0 to drop a session; clear a day's sessions for a rest day.") }}</div>
@@ -78,7 +78,7 @@
                         <input type="number" min="0" max="600" wire:model="draft.{{ $day }}.sessions.{{ $i }}.minutes" class="input-dark text-xs" style="width:64px; padding:0.4rem 0.5rem;" placeholder="min">
                         <button type="button" wire:click="removeSession('{{ $day }}', {{ $i }})" class="text-xs px-2" style="color: var(--blood);">✕</button>
                     </div>
-                    <input type="text" wire:model="draft.{{ $day }}.sessions.{{ $i }}.detail" class="input-dark text-xs w-full mt-1" style="padding:0.4rem 0.5rem;" placeholder="{{ __('What to work on — rounds, drills, intensity') }}">
+                    <input type="text" wire:model="draft.{{ $day }}.sessions.{{ $i }}.detail" class="input-dark text-xs w-full mt-1" style="padding:0.4rem 0.5rem;" placeholder="{{ __('What to work on - rounds, drills, intensity') }}">
                 </div>
                 @endforeach
                 <button type="button" wire:click="addSession('{{ $day }}')" class="text-xs" style="color: var(--gold);">+ {{ __('add session') }}</button>

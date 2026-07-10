@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    {{-- Day strip — always shown so you can see which week you're viewing --}}
+    {{-- Day strip - always shown so you can see which week you're viewing --}}
     <div class="grid grid-cols-7 gap-1 mb-4">
         @foreach($days as $day)
         @php
@@ -99,14 +99,14 @@
 
         <div class="stat-tile stat-tile-gold">
             <div class="font-display text-3xl font-bold leading-none" style="color: var(--gold);">
-                {{ $summary['totalKcal'] > 0 ? number_format($summary['totalKcal']) : '—' }}
+                {{ $summary['totalKcal'] > 0 ? number_format($summary['totalKcal']) : '-' }}
             </div>
             <div class="text-xs mt-1" style="color: var(--text-muted);">{{ __('kcal logged this week') }}</div>
         </div>
 
         <div class="stat-tile stat-tile-blue">
             <div class="flex items-end gap-1.5">
-                <div class="font-display text-3xl font-bold leading-none" style="color: #3498db;">{{ $summary['avgWater'] ?? '—' }}</div>
+                <div class="font-display text-3xl font-bold leading-none" style="color: #3498db;">{{ $summary['avgWater'] ?? '-' }}</div>
                 <div class="text-sm font-semibold pb-0.5" style="color: #3498db;">L</div>
             </div>
             <div class="text-xs mt-1" style="color: var(--text-muted);">{{ __('avg water / day') }}</div>
@@ -115,11 +115,11 @@
         <div class="stat-tile">
             <div class="grid grid-cols-2 gap-2">
                 <div>
-                    <div class="font-display text-xl font-bold leading-none">{{ $summary['avgSleep'] ?? '—' }}</div>
+                    <div class="font-display text-xl font-bold leading-none">{{ $summary['avgSleep'] ?? '-' }}</div>
                     <div class="text-xs mt-1" style="color: var(--text-muted);">{{ __('avg sleep') }}</div>
                 </div>
                 <div>
-                    <div class="font-display text-xl font-bold leading-none" style="color: #2ecc71;">{{ $summary['avgEnergy'] ?? '—' }}</div>
+                    <div class="font-display text-xl font-bold leading-none" style="color: #2ecc71;">{{ $summary['avgEnergy'] ?? '-' }}</div>
                     <div class="text-xs mt-1" style="color: var(--text-muted);">{{ __('avg energy') }}</div>
                 </div>
             </div>

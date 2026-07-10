@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'BoxerOS')</title>
-    {{-- Legal boilerplate shouldn't be the brand's face in search — keep it out of the index
+    {{-- Legal boilerplate shouldn't be the brand's face in search - keep it out of the index
          so the homepage is the result people see for "BoxerOS". --}}
     <meta name="robots" content="noindex, follow">
     <style>

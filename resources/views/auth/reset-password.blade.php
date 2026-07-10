@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="auth-title">{{ __('Choose a new password') }}</div>
-    <p class="auth-subtitle">{{ __('Almost there — set a new password for your account.') }}</p>
+    <p class="auth-subtitle">{{ __('Almost there - set a new password for your account.') }}</p>
 
     <form method="POST" action="{{ route('password.store') }}">
         @csrf

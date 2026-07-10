@@ -2,7 +2,7 @@
     <h1 class="font-display text-3xl font-bold">{{ __('Users') }}</h1>
     <p style="color: var(--text-muted); font-size:.85rem; margin-bottom:1.25rem;">{{ __('Everyone registered on BoxerOS.') }}</p>
 
-    {{-- Visitor stats (people who came to the site — registered or not) --}}
+    {{-- Visitor stats (people who came to the site - registered or not) --}}
     <div style="font-size:.72rem; text-transform:uppercase; letter-spacing:.5px; color:var(--text-muted); margin-bottom:.5rem;">👁 {{ __('Visitors') }}</div>
     <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:.7rem; margin-bottom:.5rem;">
         <div class="card" style="text-align:center; padding:1rem;">
@@ -87,6 +87,6 @@
     </div>
 
     @if(count($users) === 100)
-        <p style="color:var(--text-muted); font-size:.72rem; text-align:center; margin-top:1rem;">{{ __('Showing the 100 most recent — use search to find others.') }}</p>
+        <p style="color:var(--text-muted); font-size:.72rem; text-align:center; margin-top:1rem;">{{ __('Showing the 100 most recent - use search to find others.') }}</p>
     @endif
 </div>

@@ -32,11 +32,11 @@
             <span class="badge badge-gray">{{ $trainIcons[$ps['type']] ?? '💪' }} {{ __(ucfirst($ps['type'])) }} {{ $ps['minutes'] }}m</span>
             @endforeach
         </div>
-        <div class="text-xs mt-3" style="color: var(--text-muted);">{!! __('That\'s your target for today — log what you <strong>actually</strong> do in Training sessions below.') !!}</div>
+        <div class="text-xs mt-3" style="color: var(--text-muted);">{!! __('That\'s your target for today - log what you <strong>actually</strong> do in Training sessions below.') !!}</div>
     </div>
     @elseif($isToday && $planToday && empty($planToday['sessions']))
     <div class="card" style="border-color: rgba(46,204,113,0.25);">
-        <div class="text-sm" style="color: var(--text-muted);">😌 {{ __('Your plan says rest today — recover and refuel.') }}</div>
+        <div class="text-sm" style="color: var(--text-muted);">😌 {{ __('Your plan says rest today - recover and refuel.') }}</div>
     </div>
     @endif
 
@@ -95,11 +95,11 @@
                     <div class="text-xs" style="color: var(--text-muted);">L {{ __('water') }}</div>
                 </div>
                 <div>
-                    <div class="font-display text-xl font-bold" style="color: var(--gold);">{{ $training_minutes ? $training_minutes.'m' : '—' }}</div>
+                    <div class="font-display text-xl font-bold" style="color: var(--gold);">{{ $training_minutes ? $training_minutes.'m' : '-' }}</div>
                     <div class="text-xs truncate" style="color: var(--text-muted);">{{ count($sessions) > 1 ? count($sessions).' '.__('sessions') : ($training_type ? __($training_type) : __('rest')) }}</div>
                 </div>
                 <div>
-                    <div class="font-display text-xl font-bold">{{ $sleep_hours ?? '—' }}</div>
+                    <div class="font-display text-xl font-bold">{{ $sleep_hours ?? '-' }}</div>
                     <div class="text-xs" style="color: var(--text-muted);">{{ __('sleep h') }}</div>
                 </div>
                 <div>
@@ -111,7 +111,7 @@
                     <div class="text-xs" style="color: var(--text-muted);">{{ __('energy') }}</div>
                 </div>
                 <div>
-                    <div class="font-display text-xl font-bold" style="color: #2ecc71;">{{ $confirmedCalories ? number_format($confirmedCalories) : '—' }}</div>
+                    <div class="font-display text-xl font-bold" style="color: #2ecc71;">{{ $confirmedCalories ? number_format($confirmedCalories) : '-' }}</div>
                     <div class="text-xs" style="color: var(--text-muted);">kcal</div>
                 </div>
             </div>
@@ -148,7 +148,7 @@
             </div>
         </div>
 
-        {{-- Logging inputs — masonry so cards pack tight (no empty gaps); 1 column on mobile --}}
+        {{-- Logging inputs - masonry so cards pack tight (no empty gaps); 1 column on mobile --}}
         <style>
             .log-masonry { column-gap: 1rem; }
             @media (min-width: 1024px) { .log-masonry { column-count: 2; } }
@@ -217,7 +217,7 @@
                 @empty
                 <div class="text-center mb-2" style="padding: 1.1rem; background: rgba(255,255,255,0.02); border: 1px dashed var(--dark-border); border-radius: 12px;">
                     <div style="font-size: 1.6rem; line-height: 1;">😌</div>
-                    <div class="text-sm mt-1" style="color: var(--text-muted);">{{ __('Rest day — add a session if you trained') }}</div>
+                    <div class="text-sm mt-1" style="color: var(--text-muted);">{{ __('Rest day - add a session if you trained') }}</div>
                 </div>
                 @endforelse
                 <button type="button" wire:click="addSession" class="w-full text-sm font-semibold"
@@ -275,7 +275,7 @@
             <div class="text-xs mt-1.5" style="color: var(--text-muted);">≈ {{ $sodaSugar }}{{ __('g sugar') }} · {{ number_format($sodaKcal) }} kcal</div>
             @endif
 
-            <label class="text-xs mb-2 mt-4 block font-semibold" style="color: var(--text-muted);">🍺 {{ __('Alcohol — tap what you drank') }}</label>
+            <label class="text-xs mb-2 mt-4 block font-semibold" style="color: var(--text-muted);">🍺 {{ __('Alcohol - tap what you drank') }}</label>
             <div>
                 @foreach($alcoholTypes as $key => $d)
                 <div class="flex items-center justify-between py-2" style="border-top: 1px solid rgba(255,255,255,0.05);">
@@ -323,7 +323,7 @@
 
             @if(($soda_cans > 0 || $alcoholCount > 0) && $inCamp)
             <div class="mt-3 pt-3 text-xs" style="border-top: 1px solid var(--dark-border); color: #ff6b6b;">
-                ⚠ {{ $fightDays }} {{ __('days to your fight — sugar & alcohol stall your cut and slow recovery.') }}
+                ⚠ {{ $fightDays }} {{ __('days to your fight - sugar & alcohol stall your cut and slow recovery.') }}
             </div>
             @endif
         </div>
@@ -374,10 +374,10 @@
                     </div>
                 </div>
 
-                {{-- Stats — fixed grid so layout never shifts --}}
+                {{-- Stats - fixed grid so layout never shifts --}}
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div>
-                        <div class="font-display text-base font-bold leading-none">{{ isset($weightByDate[$dKey]) ? number_format($weightByDate[$dKey], 1) : '—' }}<span class="text-xs font-normal" style="color: var(--text-muted);"> kg</span></div>
+                        <div class="font-display text-base font-bold leading-none">{{ isset($weightByDate[$dKey]) ? number_format($weightByDate[$dKey], 1) : '-' }}<span class="text-xs font-normal" style="color: var(--text-muted);"> kg</span></div>
                         <div class="text-xs mt-1" style="color: var(--text-muted);">⚖️ {{ __('Weight') }}</div>
                     </div>
                     <div>
@@ -389,7 +389,7 @@
                         <div class="text-xs mt-1 truncate" style="color: var(--text-muted);">{{ $log->training_minutes ? ($trainIcons[$log->training_type] ?? '🏋️').' '.($sessCount > 1 ? $sessCount.' '.__('sessions') : __($log->training_type)) : '💤 '.__('rest day') }}</div>
                     </div>
                     <div>
-                        <div class="font-display text-base font-bold leading-none">{{ $log->sleep_hours ?? '—' }}<span class="text-xs font-normal" style="color: var(--text-muted);"> h</span></div>
+                        <div class="font-display text-base font-bold leading-none">{{ $log->sleep_hours ?? '-' }}<span class="text-xs font-normal" style="color: var(--text-muted);"> h</span></div>
                         <div class="text-xs mt-1" style="color: var(--text-muted);">😴 {{ __('Sleep') }}</div>
                     </div>
                 </div>

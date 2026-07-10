@@ -38,7 +38,7 @@
         <button type="submit" class="btn-submit">{{ __('Create account') }}</button>
 
         <p style="font-size:.72rem; color: rgba(255,255,255,.4); text-align:center; margin-top:1rem; line-height:1.55;">
-            🔒 {{ __('Your data stays private — we never sell or share it.') }}<br>
+            🔒 {{ __('Your data stays private - we never sell or share it.') }}<br>
             {!! __('By creating an account you agree to our :terms and :privacy.', [
                 'terms'   => '<a href="'.route('terms').'" style="color: rgba(255,255,255,.62); text-decoration: underline;">'.__('Terms').'</a>',
                 'privacy' => '<a href="'.route('privacy').'" style="color: rgba(255,255,255,.62); text-decoration: underline;">'.__('Privacy Policy').'</a>',

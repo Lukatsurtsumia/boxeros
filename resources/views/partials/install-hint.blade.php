@@ -1,6 +1,6 @@
 {{-- Mobile "Add to Home Screen" hint. Shows once for phone visitors who haven't installed
      or dismissed it, and auto-detects iPhone vs Android for the right instructions.
-     (No service worker on this app, so Android's auto-prompt rarely fires — we show the
+     (No service worker on this app, so Android's auto-prompt rarely fires - we show the
      manual steps, and still use the native prompt as a bonus if it happens to appear.) --}}
 <div id="pwa-install-hint" style="display:none; position:fixed; left:12px; right:12px; bottom:calc(14px + env(safe-area-inset-bottom)); z-index:9999; background:#14151a; border:1px solid #2a2a35; border-radius:16px; padding:14px 16px; box-shadow:0 14px 44px rgba(0,0,0,.55);">
     <button type="button" onclick="dismissPwaHint()" aria-label="{{ __('Close') }}" style="position:absolute; top:6px; right:9px; background:none; border:none; color:#8888a8; font-size:22px; line-height:1; cursor:pointer;">&times;</button>

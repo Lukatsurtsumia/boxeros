@@ -112,11 +112,11 @@
             @if($todayLog || $trainedToday)
             <div class="grid grid-cols-3 gap-2 text-center">
                 <div class="stat-tile">
-                    <div class="font-display text-xl font-bold" style="color: var(--blood);">{{ $trainedToday ? $trainedToday.'m' : '—' }}</div>
+                    <div class="font-display text-xl font-bold" style="color: var(--blood);">{{ $trainedToday ? $trainedToday.'m' : '-' }}</div>
                     <div class="text-xs mt-0.5" style="color: var(--text-muted);">{{ __('Training') }}</div>
                 </div>
                 <div class="stat-tile">
-                    <div class="font-display text-xl font-bold" style="color: var(--gold);">{{ $todayCalories > 0 ? number_format($todayCalories) : '—' }}</div>
+                    <div class="font-display text-xl font-bold" style="color: var(--gold);">{{ $todayCalories > 0 ? number_format($todayCalories) : '-' }}</div>
                     <div class="text-xs mt-0.5" style="color: var(--text-muted);">kcal</div>
                 </div>
                 <div class="stat-tile">
@@ -211,7 +211,7 @@
             </div>
             @endif
             @else
-            <p class="text-sm" style="color: var(--text-muted);">{{ __('No weigh-in yet — log your first one to start tracking.') }}</p>
+            <p class="text-sm" style="color: var(--text-muted);">{{ __('No weigh-in yet - log your first one to start tracking.') }}</p>
             @endif
 
             {{-- Today's weigh-ins (compact chips) --}}
@@ -276,8 +276,8 @@
     </div>
     @elseif($recapLocked)
     <div class="card" style="text-align:center;">
-        <div class="text-sm">🔒 {{ __('Your first weekly recap unlocks after a full week') }} — <strong style="color: var(--gold);">{{ trans_choice('{1}:count day to go|[2,*]:count days to go', $firstWeekDaysLeft, ['count' => $firstWeekDaysLeft]) }}</strong></div>
-        <div class="text-xs mt-1" style="color: var(--text-muted);">{{ __('Keep logging — CORNER reviews your week once it has the full picture.') }}</div>
+        <div class="text-sm">🔒 {{ __('Your first weekly recap unlocks after a full week') }} - <strong style="color: var(--gold);">{{ trans_choice('{1}:count day to go|[2,*]:count days to go', $firstWeekDaysLeft, ['count' => $firstWeekDaysLeft]) }}</strong></div>
+        <div class="text-xs mt-1" style="color: var(--text-muted);">{{ __('Keep logging - CORNER reviews your week once it has the full picture.') }}</div>
     </div>
     @else
     <button type="button" wire:click="generateConclusion" class="btn-ghost w-full py-2.5 text-sm">

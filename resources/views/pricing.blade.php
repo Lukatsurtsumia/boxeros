@@ -2,10 +2,10 @@
 @section('title', 'Pricing · BoxerOS')
 @section('content')
     <h1>Pricing</h1>
-    <p>One simple plan. Start with a 7-day free trial — no charge until it ends, cancel anytime.</p>
+    <p>One simple plan. Start with a 7-day free trial - no charge until it ends, cancel anytime.</p>
 
     <div style="background:#15151c; border:1px solid rgba(243,156,18,0.25); border-radius:14px; padding:1.5rem 1.5rem 1.75rem; margin:1.5rem 0; max-width:420px;">
-        <div style="color:var(--gold); font-weight:800; letter-spacing:0.5px; font-size:0.8rem; text-transform:uppercase;">BoxerOS — full access</div>
+        <div style="color:var(--gold); font-weight:800; letter-spacing:0.5px; font-size:0.8rem; text-transform:uppercase;">BoxerOS - full access</div>
         <div style="margin:0.5rem 0 0.25rem;">
             <span style="font-size:2.6rem; font-weight:800; color:#fff;">€7.99</span>
             <span style="color:#8a8a95;"> / month</span>
@@ -13,7 +13,7 @@
         <div style="color:var(--gold); font-weight:600; font-size:0.95rem; margin-bottom:1rem;">7-day free trial included</div>
 
         <ul style="list-style:none; padding:0; margin:0 0 1.5rem;">
-            <li style="padding:0.3rem 0;">🥊 CORNER — your AI boxing coach, unlimited</li>
+            <li style="padding:0.3rem 0;">🥊 CORNER - your AI boxing coach, unlimited</li>
             <li style="padding:0.3rem 0;">⚖️ Weight &amp; weigh-in tracking with trends</li>
             <li style="padding:0.3rem 0;">🍽️ Nutrition &amp; hydration logging</li>
             <li style="padding:0.3rem 0;">📅 Fight countdown &amp; training plans</li>

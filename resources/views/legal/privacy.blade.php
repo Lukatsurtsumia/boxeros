@@ -6,10 +6,10 @@
 
     <h2>What we collect</h2>
     <ul>
-        <li><strong>Account data</strong> — your name, email, and password (stored hashed).</li>
-        <li><strong>Health & training data you enter</strong> — weight, training sessions, meals, sleep,
+        <li><strong>Account data</strong> - your name, email, and password (stored hashed).</li>
+        <li><strong>Health & training data you enter</strong> - weight, training sessions, meals, sleep,
         mood, fights, and goals.</li>
-        <li><strong>Coaching content</strong> — your messages to CORNER and the plans/recaps it generates.</li>
+        <li><strong>Coaching content</strong> - your messages to CORNER and the plans/recaps it generates.</li>
     </ul>
 
     <h2>How we use it</h2>

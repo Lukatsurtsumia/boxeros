@@ -1,4 +1,4 @@
-{{-- "Continue with Google" — only appears once GOOGLE_CLIENT_ID is configured, so it
+{{-- "Continue with Google" - only appears once GOOGLE_CLIENT_ID is configured, so it
      ships dormant and lights up the moment the credentials are added. --}}
 @if(config('services.google.client_id'))
     <a href="{{ route('google.redirect') }}" class="btn-google">

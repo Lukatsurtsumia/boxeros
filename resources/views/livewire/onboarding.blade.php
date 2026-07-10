@@ -2,7 +2,7 @@
     <div class="card card-glow text-center">
         <div class="text-4xl mb-2">🥊</div>
         <div class="font-display text-2xl font-bold">{{ __('Welcome, :name', ['name' => auth()->user()->name]) }}</div>
-        <p class="text-sm mt-1" style="color: var(--text-muted);">{{ __("Let's set up your fighter profile — 30 seconds. You can change anything later.") }}</p>
+        <p class="text-sm mt-1" style="color: var(--text-muted);">{{ __("Let's set up your fighter profile - 30 seconds. You can change anything later.") }}</p>
     </div>
 
     <form wire:submit="save" class="card space-y-3">

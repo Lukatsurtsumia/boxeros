@@ -39,10 +39,10 @@
         <div class="brand" translate="no"><span class="r">BOXER</span>OS</div>
 
         @if($u->is_admin)
-            {{-- Owner / admin — always full access, never billed --}}
+            {{-- Owner / admin - always full access, never billed --}}
             <span class="pill green">👑 {{ __('Owner') }}</span>
             <h1 style="margin-top:1rem;">{{ __('You have full access') }}</h1>
-            <p>{{ __('As the owner of BoxerOS you have unlimited access — no subscription needed.') }}</p>
+            <p>{{ __('As the owner of BoxerOS you have unlimited access - no subscription needed.') }}</p>
             <a href="{{ route('dashboard') }}" class="btn" style="margin-top:1.5rem;">{{ __('Go to your dashboard') }} →</a>
 
         @elseif($u->subscribedActive())
@@ -54,7 +54,7 @@
             <a href="{{ route('billing.manage') }}" class="btn ghost" style="margin-top:0.75rem;">{{ __('Manage or cancel subscription') }}</a>
 
         @elseif($success)
-            {{-- Just paid — the route confirms via the Paddle API; this is the rare fallback. --}}
+            {{-- Just paid - the route confirms via the Paddle API; this is the rare fallback. --}}
             <span class="pill green">✓ {{ __('Payment received') }}</span>
             <h1 style="margin-top:1rem;">{{ __('Thank you!') }}</h1>
             <p>{{ __('Your payment went through. Tap continue to enter BoxerOS.') }}</p>
@@ -75,13 +75,13 @@
             <div class="card">
                 <div class="price">€7.99<small> / {{ __('month') }}</small></div>
                 <ul>
-                    <li>🥊 {{ __('CORNER — your AI coach, unlimited') }}</li>
+                    <li>🥊 {{ __('CORNER - your AI coach, unlimited') }}</li>
                     <li>⚖️ {{ __('Weight & weigh-in tracking') }}</li>
                     <li>🍽️ {{ __('Nutrition & hydration logging') }}</li>
                     <li>📅 {{ __('Fight countdown & training plans') }}</li>
                     <li>📊 {{ __('Weekly recaps & insights') }}</li>
                 </ul>
-                <button class="btn" onclick="boxerosCheckout()">{{ __('Subscribe — €7.99/month') }}</button>
+                <button class="btn" onclick="boxerosCheckout()">{{ __('Subscribe - €7.99/month') }}</button>
                 @if($u->onTrial())
                     <a href="{{ route('dashboard') }}" class="btn ghost">{{ __('Keep using my trial') }}</a>
                 @endif
@@ -108,7 +108,7 @@
         })();
 
         function boxerosCheckout() {
-            if (typeof Paddle === 'undefined') { alert('Checkout is still loading — please try again in a moment.'); return; }
+            if (typeof Paddle === 'undefined') { alert('Checkout is still loading - please try again in a moment.'); return; }
             Paddle.Checkout.open({
                 items: [{ priceId: @json(config('services.paddle.price_id')), quantity: 1 }],
                 customer: { email: @json($u->email) },

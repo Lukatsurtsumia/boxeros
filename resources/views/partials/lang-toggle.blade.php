@@ -1,5 +1,5 @@
 @php $ul = app()->getLocale(); @endphp
-{{-- Self-contained EN/FR switch — no CSS-var dependency, so it works on the app shell,
+{{-- Self-contained EN/FR switch - no CSS-var dependency, so it works on the app shell,
      the auth card and the public landing page alike. --}}
 <form method="POST" action="{{ route('locale.set') }}"
       style="display:inline-flex; align-items:center; border:1px solid rgba(255,255,255,0.15); border-radius:8px; overflow:hidden; flex-shrink:0;">

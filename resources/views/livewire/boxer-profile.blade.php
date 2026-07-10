@@ -91,7 +91,7 @@
             @endif
             <div class="flex-1 min-w-0">
                 <div class="section-label mb-1">{{ __('Profile Photo') }}</div>
-                <p class="text-xs mb-2" style="color: var(--text-muted);">{{ __('Zoom and drag to frame it — any photo works') }}</p>
+                <p class="text-xs mb-2" style="color: var(--text-muted);">{{ __('Zoom and drag to frame it - any photo works') }}</p>
                 <button type="button" @click="$refs.picker.click()" class="btn-ghost text-xs px-3 py-1.5 inline-block cursor-pointer">
                     <span x-show="!uploading">{{ __('Choose photo') }}</span>
                     <span x-show="uploading" style="color: var(--gold);">{{ __('Uploading…') }}</span>
@@ -230,7 +230,7 @@
         {{-- Bio --}}
         <div class="card">
             <div class="section-label mb-3">📝 {{ __('Bio') }}</div>
-            <textarea wire:model="bio" rows="3" class="input-dark" placeholder="{{ __('Tell your story — CORNER uses this to coach you.') }}"></textarea>
+            <textarea wire:model="bio" rows="3" class="input-dark" placeholder="{{ __('Tell your story - CORNER uses this to coach you.') }}"></textarea>
         </div>
 
         {{-- Actions --}}
@@ -249,12 +249,12 @@
         <div class="section-label mb-3">{{ __('Tale of the Tape') }}</div>
         @php
             $vitals = [
-                ['🎂', __('Age'),    $profile->date_of_birth ? $profile->date_of_birth->age . ' ' . __('yrs') : '—'],
-                ['⚖️', __('Weight'), $currentWeight ? number_format($currentWeight, 1) . ' kg' : '—'],
-                ['📏', __('Height'), $profile->height_cm ? $profile->height_cm . ' cm' : '—'],
-                ['🤜', __('Reach'),  $profile->reach_cm ? $profile->reach_cm . ' cm' : '—'],
+                ['🎂', __('Age'),    $profile->date_of_birth ? $profile->date_of_birth->age . ' ' . __('yrs') : '-'],
+                ['⚖️', __('Weight'), $currentWeight ? number_format($currentWeight, 1) . ' kg' : '-'],
+                ['📏', __('Height'), $profile->height_cm ? $profile->height_cm . ' cm' : '-'],
+                ['🤜', __('Reach'),  $profile->reach_cm ? $profile->reach_cm . ' cm' : '-'],
                 ['🥊', __('Stance'), $profile->stanceLabel()],
-                ['⏳', __('Pro yrs'), $profile->experience_years ?: '—'],
+                ['⏳', __('Pro yrs'), $profile->experience_years ?: '-'],
             ];
         @endphp
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
@@ -267,13 +267,13 @@
             @endforeach
         </div>
 
-        {{-- Goal weight — prominent, at the end --}}
+        {{-- Goal weight - prominent, at the end --}}
         <div class="stat-tile stat-tile-gold mt-2 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <span class="text-xl">🎯</span>
                 <span class="text-sm" style="color: var(--text-muted);">{{ __('Goal weight') }}</span>
             </div>
-            <div class="font-display text-2xl font-bold" style="color: var(--gold);">{{ $profile->goal_weight ? $profile->goal_weight . ' kg' : '—' }}</div>
+            <div class="font-display text-2xl font-bold" style="color: var(--gold);">{{ $profile->goal_weight ? $profile->goal_weight . ' kg' : '-' }}</div>
         </div>
     </div>
 
@@ -313,11 +313,11 @@
             <div class="space-y-2.5">
                 <div class="flex items-center justify-between">
                     <span class="text-sm" style="color: var(--text-muted);">🏋️ {{ __('Boxing gym') }}</span>
-                    <span class="text-sm font-medium">{{ $profile->gym ?? '—' }}</span>
+                    <span class="text-sm font-medium">{{ $profile->gym ?? '-' }}</span>
                 </div>
                 <div class="flex items-center justify-between">
                     <span class="text-sm" style="color: var(--text-muted);">👤 {{ __('Trainer') }}</span>
-                    <span class="text-sm font-medium">{{ $profile->trainer ?? '—' }}</span>
+                    <span class="text-sm font-medium">{{ $profile->trainer ?? '-' }}</span>
                 </div>
             </div>
         </div>

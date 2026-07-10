@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
         <div>
             <div class="font-display text-2xl font-bold">Teach CORNER</div>
-            <div class="text-xs mt-0.5" style="color: var(--text-muted);">Your coaching material — CORNER treats this as authoritative</div>
+            <div class="text-xs mt-0.5" style="color: var(--text-muted);">Your coaching material - CORNER treats this as authoritative</div>
         </div>
         @if($showForm)
         <button type="button" wire:click="cancelForm" class="btn-ghost text-xs px-3 py-1.5">Cancel</button>
@@ -35,7 +35,7 @@
 
         <label class="flex items-center gap-2 text-sm cursor-pointer">
             <input type="checkbox" wire:model="is_active">
-            <span>Active — CORNER uses this</span>
+            <span>Active - CORNER uses this</span>
         </label>
 
         <div class="flex gap-2">

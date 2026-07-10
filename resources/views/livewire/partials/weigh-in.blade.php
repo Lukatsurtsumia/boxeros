@@ -35,6 +35,6 @@
         @endforeach
     </div>
     @unless($compact ?? false)
-    <p class="text-xs mt-2" style="color: var(--text-muted);">{{ __('Log anytime you weigh in — no pressure if you don\'t know it.') }}</p>
+    <p class="text-xs mt-2" style="color: var(--text-muted);">{{ __('Log anytime you weigh in - no pressure if you don\'t know it.') }}</p>
     @endunless
 </div>

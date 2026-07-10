@@ -45,7 +45,7 @@
             width: 100%;
             padding-bottom: calc(5rem + env(safe-area-inset-bottom));
         }
-        /* The 5rem bottom padding only exists to clear the mobile bottom-nav — on
+        /* The 5rem bottom padding only exists to clear the mobile bottom-nav - on
            desktop (nav hidden) it was just dead space at the foot of every page. */
         @media (min-width: 1024px) { body { padding-bottom: 2rem; } }
         h1, h2, h3, .font-display { font-family: 'Rajdhani', sans-serif; }
@@ -302,7 +302,7 @@
 <body>
 
     @php
-        // Single source of truth for navigation — looped in both the desktop sidebar and the
+        // Single source of truth for navigation - looped in both the desktop sidebar and the
         // mobile bottom bar. `d` is the SVG path; all icons share the same <svg> wrapper.
         $navItems = [
             ['route' => 'dashboard',     'label' => __('Home'),    'd' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],

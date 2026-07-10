@@ -133,7 +133,7 @@
             -webkit-text-fill-color: #f0f0f0;
         }
 
-        /* Error state — applied to .field when that field has errors */
+        /* Error state - applied to .field when that field has errors */
         .field.has-error input {
             border-color: rgba(231,76,60,.55);
             background: rgba(231,76,60,.04);
@@ -143,7 +143,7 @@
             box-shadow: 0 0 0 3px rgba(231,76,60,.1);
         }
 
-        /* Always reserve 1.1rem below each input — error text fills it, empty fields keep the space */
+        /* Always reserve 1.1rem below each input - error text fills it, empty fields keep the space */
         .field-hint {
             min-height: 1.1rem;
             padding-top: .28rem;
@@ -163,7 +163,7 @@
             flex-shrink: 0;
         }
 
-        /* Password strength meter — live feedback as you type */
+        /* Password strength meter - live feedback as you type */
         .pw-strength {
             display: flex; align-items: center; gap: .6rem;
             margin-top: .5rem; min-height: 14px;

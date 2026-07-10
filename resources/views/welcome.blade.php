@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google-site-verification" content="CtiKNd6GsbyBZjD6cd6xYJtuyxTMyZMa8Jkot_92lIM" />
-    <title>BoxerOS — {{ __('AI Boxing Coach & Training App') }}</title>
-    <meta name="description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.') }}">
+    <title>BoxerOS - {{ __('AI Boxing Coach & Training App') }}</title>
+    <meta name="description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights - and talk to an AI coach that actually knows you.') }}">
     <meta name="robots" content="index, follow">
     <meta name="keywords" content="BoxerOS, boxer os, boxeros app, boxing coach, AI boxing coach, boxing training app, boxing nutrition, weight cut, fight preparation">
     <link rel="canonical" href="{{ url('/') }}">
@@ -13,14 +13,14 @@
     {{-- Social / search preview (Open Graph + Twitter) --}}
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="BoxerOS">
-    <meta property="og:title" content="BoxerOS — {{ __('Your Corner, In Your Pocket') }}">
-    <meta property="og:description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.') }}">
+    <meta property="og:title" content="BoxerOS - {{ __('Your Corner, In Your Pocket') }}">
+    <meta property="og:description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights - and talk to an AI coach that actually knows you.') }}">
     <meta property="og:url" content="{{ url('/') }}">
     <meta property="og:image" content="{{ asset('icon-512.png') }}">
     <meta property="og:locale" content="{{ app()->getLocale() === 'fr' ? 'fr_FR' : 'en_US' }}">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="BoxerOS — {{ __('Your Corner, In Your Pocket') }}">
-    <meta name="twitter:description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.') }}">
+    <meta name="twitter:title" content="BoxerOS - {{ __('Your Corner, In Your Pocket') }}">
+    <meta name="twitter:description" content="{{ __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights - and talk to an AI coach that actually knows you.') }}">
     <meta name="twitter:image" content="{{ asset('icon-512.png') }}">
 
     {{-- Structured data: helps Google understand the brand "BoxerOS". Built from a PHP
@@ -52,7 +52,7 @@
                 'url' => url('/'),
                 'applicationCategory' => 'HealthApplication',
                 'operatingSystem' => 'Web, iOS, Android',
-                'description' => __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights — and talk to an AI coach that actually knows you.'),
+                'description' => __('The all-in-one training companion for professional boxers. Track weight, nutrition, hydration and fights - and talk to an AI coach that actually knows you.'),
                 'offers' => ['@type' => 'Offer', 'price' => '0', 'priceCurrency' => 'EUR'],
                 'publisher' => ['@id' => url('/').'#organization'],
             ],
@@ -303,7 +303,7 @@
                 <div class="tag rise d1">🥊 {{ __('Built for professional fighters') }}</div>
                 <h1 class="rise d2">{{ __('Your corner.') }}<br><span class="grad">{{ __('In your pocket.') }}</span></h1>
                 <p class="lead rise d3">
-                    {{ __('The all-in-one command center for serious boxers. Track weight, nutrition, hydration and fight camps — then talk to an AI coach that actually knows your numbers.') }}
+                    {{ __('The all-in-one command center for serious boxers. Track weight, nutrition, hydration and fight camps - then talk to an AI coach that actually knows your numbers.') }}
                 </p>
                 <div class="cta-row rise d4">
                     <a href="{{ route('register') }}" class="btn-hero">{{ __('Create Free Account') }} →</a>
@@ -384,7 +384,7 @@
         <div class="wrap">
             <div class="eyebrow">{{ __('Everything in one place') }}</div>
             <h2 class="section-title">{{ __('Built for the whole camp') }}</h2>
-            <p class="section-sub">{{ __('From the weigh-in to the final bell — every part of your preparation, tracked and connected.') }}</p>
+            <p class="section-sub">{{ __('From the weigh-in to the final bell - every part of your preparation, tracked and connected.') }}</p>
 
             <div class="feature-grid">
                 <div class="fcard">
@@ -405,7 +405,7 @@
                 <div class="fcard">
                     <span class="ficon">📋</span>
                     <div class="ftitle">{{ __('Weekly Plans') }}</div>
-                    <div class="fdesc">{{ __('CORNER builds your week — training, nutrition, sleep and weight targets — then tracks it against what you actually do.') }}</div>
+                    <div class="fdesc">{{ __('CORNER builds your week - training, nutrition, sleep and weight targets - then tracks it against what you actually do.') }}</div>
                 </div>
                 <div class="fcard">
                     <span class="ficon">📅</span>
@@ -414,7 +414,7 @@
                 </div>
                 <div class="fcard" style="border-color: rgba(192,57,43,0.35);">
                     <span class="ficon">🤖</span>
-                    <div class="ftitle">{{ __('CORNER — AI Coach') }}</div>
+                    <div class="ftitle">{{ __('CORNER - AI Coach') }}</div>
                     <div class="fdesc">{{ __('A coach that knows your weight, meals, training and fight date. Ask anything, anytime.') }}</div>
                 </div>
             </div>
@@ -427,21 +427,21 @@
             <div>
                 <div class="eyebrow" style="text-align:left;">{{ __('Meet CORNER') }}</div>
                 <h2>{{ __('An AI coach that actually knows you.') }}</h2>
-                <p>{{ __("CORNER isn't a generic chatbot. It reads your real logs — this week's training, your current weight versus your goal, your meals, and how many days until your next fight — then coaches you on what to do next.") }}</p>
+                <p>{{ __("CORNER isn't a generic chatbot. It reads your real logs - this week's training, your current weight versus your goal, your meals, and how many days until your next fight - then coaches you on what to do next.") }}</p>
                 <div class="check"><span class="ic">✓</span><span>{{ __('Personalized weekly training & cut plans') }}</span></div>
                 <div class="check"><span class="ic">✓</span><span>{{ __('Calorie & macro estimates from a photo') }}</span></div>
                 <div class="check"><span class="ic">✓</span><span>{{ __('Recovery, sleep and hydration coaching') }}</span></div>
-                <div class="check"><span class="ic">✓</span><span>{{ __('Honest, direct answers — like a real corner') }}</span></div>
+                <div class="check"><span class="ic">✓</span><span>{{ __('Honest, direct answers - like a real corner') }}</span></div>
             </div>
             <div class="chat-mock">
                 <div class="bubble b-user">{{ __("I'm 1.2kg over with 18 days to the fight. What do I do this week?") }}</div>
                 <div class="bubble b-ai">
                     <div class="who">CORNER</div>
-                    {{ __("You're on track, Mike — 1.2kg in 18 days is a controlled cut, not a crash. Keep water at 3L through Thursday, drop the evening carbs, and we'll add one extra roadwork session. Your energy's been 7/10 this week, so you've got room. I'll map the full week if you want it.") }}
+                    {{ __("You're on track, Mike - 1.2kg in 18 days is a controlled cut, not a crash. Keep water at 3L through Thursday, drop the evening carbs, and we'll add one extra roadwork session. Your energy's been 7/10 this week, so you've got room. I'll map the full week if you want it.") }}
                 </div>
             </div>
             <div style="text-align:center; font-size:0.72rem; color: rgba(255,255,255,0.4); margin-top:0.85rem; line-height:1.5;">
-                {!! __('Example reply — CORNER writes <em>every</em> answer from <strong>your own</strong> weight, fight date, energy and logs. No two fighters ever get the same one.') !!}
+                {!! __('Example reply - CORNER writes <em>every</em> answer from <strong>your own</strong> weight, fight date, energy and logs. No two fighters ever get the same one.') !!}
             </div>
         </div>
     </section>

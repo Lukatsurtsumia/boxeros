@@ -1,6 +1,6 @@
 <x-guest-layout>
     <div class="auth-title">{{ __('Sign in') }}</div>
-    <p class="auth-subtitle">{{ __('Welcome back — step into your corner.') }}</p>
+    <p class="auth-subtitle">{{ __('Welcome back - step into your corner.') }}</p>
 
     @if (session('status'))
         <div class="session-status">{{ session('status') }}</div>
