@@ -151,8 +151,8 @@
     display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
     background: linear-gradient(145deg, var(--blood-dark), var(--blood)); box-shadow: 0 2px 8px rgba(192,57,43,0.35); }
 
-.corner-bubble { max-width: 86%; padding: 0.7rem 0.9rem; font-size: 0.9rem; line-height: 1.5;
-    position: relative; word-wrap: break-word; }
+.corner-bubble { max-width: 86%; min-width: 0; padding: 0.7rem 0.9rem; font-size: 0.9rem; line-height: 1.5;
+    position: relative; word-wrap: break-word; overflow-wrap: anywhere; }
 .corner-bubble-ai { background: #15161c; border: 1px solid var(--dark-border); color: #e8e8ee;
     border-radius: 16px 16px 16px 4px; }
 .corner-bubble-user { background: linear-gradient(135deg, var(--blood), var(--blood-dark)); color: #fff;
@@ -226,7 +226,10 @@
 .chat-markdown pre { background: rgba(0,0,0,0.35); padding: 0.7rem; border-radius: 10px; overflow-x: auto; margin: 0.5rem 0; }
 .chat-markdown pre code { background: none; padding: 0; }
 .chat-markdown blockquote { border-left: 3px solid var(--blood); margin: 0.5rem 0; padding-left: 0.75rem; color: var(--text-muted); }
-.chat-markdown table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.82rem; }
+/* Wide tables (meal plans) scroll horizontally INSIDE the bubble instead of overflowing
+   the phone screen. display:block + overflow-x makes the table its own scroll area. */
+.chat-markdown table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    border-collapse: collapse; margin: 0.5rem 0; font-size: 0.82rem; white-space: nowrap; }
 .chat-markdown th, .chat-markdown td { border: 1px solid var(--dark-border); padding: 0.35rem 0.5rem; text-align: left; }
 .chat-markdown th { background: rgba(255,255,255,0.04); }
 </style>
